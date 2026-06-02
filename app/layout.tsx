@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
-import { DM_Serif_Display } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/landingpage/Header/Navbar";
-
-const dmSerifDisplay = DM_Serif_Display({
-  weight: "400",
-  variable: "--font-dm-serif-display",
-  subsets: ["latin"],
-});
 
 const satoshi = localFont({
   src: [
@@ -79,7 +72,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSerifDisplay.variable} ${satoshi.variable} h-full antialiased`}
+      className={`${satoshi.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-satoshi">
         <Navbar />

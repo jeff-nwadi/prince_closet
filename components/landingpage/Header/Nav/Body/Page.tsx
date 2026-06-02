@@ -7,7 +7,7 @@ import { blur, translate } from '../../anim';
 interface LinkType {
     title: string;
     href: string;
-    src: string;
+    src?: string;
 }
 
 interface SelectedLinkType {
@@ -24,7 +24,7 @@ interface NavBodyProps {
 export default function Body({links, selectedLink, setSelectedLink}: NavBodyProps) {
 
     const getChars = (word: string) => {
-        const chars: JSX.Element[] = [];
+        const chars: React.JSX.Element[] = [];
         word.split("").forEach( (char, i) => {
           chars.push(
             <motion.span 
@@ -33,7 +33,7 @@ export default function Body({links, selectedLink, setSelectedLink}: NavBodyProp
                 animate="enter" 
                 exit="exit" 
                 key={char + i}>
-                {char}
+                {char === ' ' ? '\u00A0' : char}
             </motion.span>
             )
         })
@@ -41,13 +41,13 @@ export default function Body({links, selectedLink, setSelectedLink}: NavBodyProp
     }
     
     return (
-        <div className="flex flex-wrap mt-[40px] min-[1000px]:max-w-[1200px] min-[1000px]:mt-[80px]">
+        <div className="flex flex-col mt-[40px] min-[1000px]:max-w-[1200px] min-[1000px]:mt-[80px]">
         {
             links.map( (link, index) => {
                 const { title, href } = link;
-                return <Link key={`l_${index}`} href={href} className="text-black no-underline uppercase">
+                return <Link key={`l_${index}`} href={href} className="text-black no-underline">
                 <motion.p 
-                    className="m-0 flex overflow-hidden text-[32px] pr-[30px] pt-[10px] font-light min-[1000px]:text-[5vw] min-[1000px]:pr-[2vw]"
+                    className="m-0 flex overflow-hidden text-[15px] pr-[30px] pt-[10px] font-light min-[1000px]:text-[2vw] min-[1000px]:pr-[2vw]"
                     onMouseOver={() => {setSelectedLink({isActive: true, index})}} 
                     onMouseLeave={() => {setSelectedLink({isActive: false, index})}} 
                     variants={blur} 

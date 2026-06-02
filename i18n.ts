@@ -8,7 +8,12 @@ const resources = {
       "typography": "Typography:",
       "images": "Images:",
       "privacyPolicy": "Privacy Policy",
-      "termsConditions": "Terms & Conditions"
+      "termsConditions": "Terms & Conditions",
+      "brandName": "Prince's Closet",
+      "menu": "Menu",
+      "close": "Close",
+      "shop": "Shop",
+      "cart": "Cart({{count}})"
     }
   }
 };

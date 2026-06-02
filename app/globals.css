@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');
 @import "tailwindcss";
 
 :root {
   --background: #f4f1eb;
   --foreground: #4a3129;
+  --font-dm-serif-display: 'DM Serif Display', Georgia, serif;
 }
 
 @theme inline {

@@ -16,7 +16,7 @@ export default function Header() {
     return (
         <div className="fixed w-full box-border bg-[#f4f0ea] p-[20px] sm:p-[30px] z-50">
             <div className="flex justify-center text-[12px] sm:text-[15px] font-normal relative">
-                <Link href="/" className="absolute left-0 text-black no-underline heading text-[18px] md:text-[24px]">{t('brandName')}</Link>
+                <Link href="/" className="absolute left-0 no-underline text-[#4A3129] heading text-[18px] md:text-[24px]">{t('brandName')}</Link>
                 <div onClick={() => {setIsActive(!isActive)}} className="flex items-center justify-center gap-2 cursor-pointer">
                     <div className={`w-[22.5px] relative pointer-events-none before:content-[''] after:content-[''] before:h-[1px] after:h-[1px] before:w-full after:w-full before:bg-black after:bg-black before:relative after:relative before:block after:block before:transition-all after:transition-all before:duration-1000 after:duration-1000 before:ease-[cubic-bezier(0.76,0,0.24,1)] after:ease-[cubic-bezier(0.76,0,0.24,1)] ${isActive ? "before:-rotate-45 before:top-[1px] after:rotate-45 after:-top-[1px]" : "before:top-[4px] after:-top-[4px]"}`}></div>
                     <div className="relative flex items-center">

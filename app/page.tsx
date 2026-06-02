@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Hero from '@/components/landingpage/hero/Hero';
+import About from '@/components/landingpage/about/About';
 
 export default function Home() {
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function Home() {
   return (
     <main className="w-full min-h-screen bg-[#f4f0ea]">
       <Hero />
+      <About/>
     </main>
   );
 }

@@ -277,27 +277,36 @@ export default function Hero() {
                   zIndex: zIndex,
                   willChange: 'transform, opacity',
                 }}
-                className="absolute w-[240px] sm:w-[300px] cursor-pointer select-none origin-center mt-36"
+                className="absolute w-[240px] sm:w-[300px] cursor-pointer select-none origin-center mt-36 group"
               >
                 {/* Image Container with aspect-[2/3] and inner image parallax */}
                 <div 
-                  className="relative overflow-hidden aspect-[2/3] w-full border border-[#4d3d30]/10 bg-[#e5dec9]"
+                  className="relative overflow-hidden aspect-[2/3] w-full border border-transparent group-hover:border-[#4d3d30] transition-all duration-500 ease-out bg-[#e5dec9]"
                 >
                   <div 
                     style={{
                       transform: `translate3d(${diff * -25}px, 0, 0) scale(1.15)`,
                       willChange: 'transform',
                     }}
-                    className="absolute inset-0 w-[120%] h-full transition-transform duration-100 ease-out"
+                    className="absolute inset-0 w-[120%] h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
                   >
                     <Image
                       src={outfit.src}
                       alt={outfit.title}
                       fill
                       priority={index < 3}
-                      className="object-cover"
+                      className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                       sizes="(max-width: 768px) 240px, 300px"
                     />
+                  </div>
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-[#4d3d30]/0 group-hover:bg-[#4d3d30]/10 transition-all duration-500 ease-out pointer-events-none" />
+                  {/* Hover label */}
+                  <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] bg-[#4d3d30]/90 px-3 py-2.5 flex items-center justify-between pointer-events-none">
+                    <span className="text-[#f4f0ea] text-xs uppercase tracking-widest font-light">View Item</span>
+                    <svg width="12" height="12" viewBox="0 0 10 10" fill="none">
+                      <path d="M1 9L9 1M9 1H3M9 1V7" stroke="#f4f0ea" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                   </div>
                 </div>
               </div>

@@ -351,14 +351,14 @@ export default function Hero() {
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                <p className="text-xs sm:text-sm text-[#8a7d72] font-light leading-relaxed min-h-[50px]">
+                <p className="sm:text-[16px] text-[#8a7d72] font-[400] leading-relaxed min-h-[50px]">
                   {outfits[activeIndex]?.description}
                 </p>
                 <div className="mt-4 flex flex-col">
-                  <h3 className="text-lg md:text-xl font-medium text-[#4d3d30] uppercase tracking-wider font-sans">
+                  <h3 className="text-[16px] text-[#4d3d30] uppercase tracking-wider font-medium">
                     {outfits[activeIndex]?.title}
                   </h3>
-                  <span className="text-sm font-semibold text-[#8a7d72] mt-0.5">
+                  <span className="text-[16px] font-semibold text-[#8a7d72] mt-0.5">
                     {outfits[activeIndex]?.price}
                   </span>
                 </div>

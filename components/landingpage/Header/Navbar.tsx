@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import '@/i18n';
@@ -11,10 +11,21 @@ import Nav from './Nav/Nav';
 export default function Header() {
 
     const [isActive, setIsActive] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
     const { t } = useTranslation();
 
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+        };
+        // Run once on mount in case the page is already scrolled
+        handleScroll();
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
-        <div className="fixed w-full box-border bg-[#f4f0ea] p-[20px] sm:p-[30px] z-50">
+        <div className={`fixed w-full box-border bg-[#f4f0ea] py-8 px-3 lg:px-16 z-50 border-b transition-colors duration-300 ${isScrolled ? 'border-[#4A3129]' : 'border-transparent'}`}>
             <div className="flex justify-center text-[12px] sm:text-[15px] font-normal relative">
                 <Link href="/" className="absolute left-0 no-underline text-[#4A3129] heading text-[18px] md:text-[24px]">{t('brandName')}</Link>
                 <div onClick={() => {setIsActive(!isActive)}} className="flex items-center justify-center gap-2 cursor-pointer">

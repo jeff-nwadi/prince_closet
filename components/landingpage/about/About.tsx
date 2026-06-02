@@ -2,25 +2,35 @@
 import SplitText from '@/components/animation/SplitText'
 import { useInView } from '@/hooks/useInView'
 import Link from 'next/link'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 const About = () => {
   const ref = useRef<HTMLDivElement>(null)
   const { isInView, onAnimationComplete } = useInView(ref, {
     margin: '-100px',
   })
+  const [isDesktop, setIsDesktop] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
   
   return (
     <div
       ref={ref}
       data-scroll-section
-      className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 py-20 lg:py-48 px-6 lg:px-16 overflow-hidden bg-[#4A3129] items-center"
+      className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 py-16 lg:py-48 px-6 lg:px-16 overflow-hidden bg-[#4A3129] items-center"
     >
-      {/* Video Container with Locomotive Scroll Parallax */}
+      {/* Video Container - Parallax only on Desktop */}
       <div 
-        data-scroll 
-        data-scroll-speed="1.2"
-        className="w-full relative aspect-[4/5] lg:aspect-[3/4] overflow-hidden bg-[#38231c] rounded-sm group border border-[#f4f1eb]/10"
+        data-scroll={isDesktop ? "true" : undefined}
+        data-scroll-speed={isDesktop ? "1.2" : undefined}
+        className="w-full relative aspect-[4/5] lg:aspect-[3/4] overflow-hidden bg-[#38231c] hidden md:flex rounded-sm group border border-[#f4f1eb]/10"
       >
         <video
           className="w-full h-full object-cover opacity-95 transition-transform duration-700 ease-out group-hover:scale-105"
@@ -34,13 +44,13 @@ const About = () => {
         <div className="absolute inset-0 bg-[#4A3129]/10 pointer-events-none" />
       </div>
 
-      {/* Text Container with complementary Locomotive Scroll Parallax */}
+      {/* Text Container - Parallax only on Desktop */}
       <div 
-        data-scroll 
-        data-scroll-speed="0.6"
+        data-scroll={isDesktop ? "true" : undefined}
+        data-scroll-speed={isDesktop ? "0.6" : undefined}
         className="z-10 flex flex-col justify-center"
       >
-        <div className="mb-8 lg:mb-12 text-left">
+        <div className="mb-6 lg:mb-12 text-left">
           <span className="text-xs uppercase tracking-widest text-[#f4f1eb]/60 font-mono mb-4 lg:mb-6 block">
             The Brand Ethos
           </span>

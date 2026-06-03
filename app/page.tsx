@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Hero from '@/components/landingpage/hero/Hero';
 import About from '@/components/landingpage/about/About';
 import Category from '@/components/landingpage/category/Category';
+import Bestsellers from '@/components/landingpage/Bestsellers/Bestsellers';
 
 export default function Home() {
   useEffect(() => {
@@ -46,6 +47,7 @@ export default function Home() {
       <Hero />
       <About/>
       <Category />
+      <Bestsellers />
     </main>
   );
 }

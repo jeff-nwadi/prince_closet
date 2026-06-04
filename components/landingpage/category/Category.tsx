@@ -103,7 +103,7 @@ const CategoryCard = ({ item, index, isInView }: { item: CategoryItem; index: nu
               {item.description}
             </p> 
           )}
-          <span className="text-lg md:text-[20px] text-[#4A3129] font-serif uppercase tracking-wider font-semibold transition-colors duration-300 group-hover:text-[#f4f0ea] leading-none">
+          <span className="text-lg md:text-[20px] text-[#4A3129] heading uppercase tracking-wider font-semibold transition-colors duration-300 group-hover:text-[#f4f0ea] leading-none">
             {item.title}
           </span>
         </div>
@@ -139,7 +139,7 @@ const Category = () => {
       {/* Title block with entrance animation */}
       <div className="mb-16 lg:mb-24">
         <motion.h2
-          className='heading text-[20px] md:text-[30px] text-[#4A3129] mb-4 uppercase tracking-wider'
+          className='heading text-[20px] md:text-[30px] text-[#4A3129] mb-4 uppercase'
           variants={fadeUp}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}

@@ -5,6 +5,7 @@ import Hero from '@/components/landingpage/hero/Hero';
 import About from '@/components/landingpage/about/About';
 import Category from '@/components/landingpage/category/Category';
 import Bestsellers from '@/components/landingpage/Bestsellers/Bestsellers';
+import Testimonial from '@/components/landingpage/testimonial/Testimonial';
 
 export default function Home() {
   useEffect(() => {
@@ -48,6 +49,7 @@ export default function Home() {
       <About/>
       <Category />
       <Bestsellers />
+      <Testimonial />
     </main>
   );
 }

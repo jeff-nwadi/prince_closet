@@ -59,30 +59,30 @@ const Testimonial = () => {
       {/* Title block with entrance animation */}
       <div className="mb-16 lg:mb-24">
         <h2
-          className='heading text-[20px] md:text-[30px] text-[#4A3129] mb-4 uppercase tracking-wider'
+          className='heading w-[70%] md:w-[50%] text-[20px] md:text-[30px] text-[#4A3129] mb-4 uppercase'
         >
           Proven Quality, Trusted By Many
         </h2>
         <p
-          className='body-text w-[30%] text-sm sm:text-base md:text-lg text-[#8a7d72] max-w-md font-mono leading-relaxed'
+          className='body-text lg:w-[30%] text-sm sm:text-base md:text-lg text-[#8a7d72] max-w-md font-mono leading-relaxed'
           
         >
           Explore our curated collections of earth-toned essentials made for daily living.
         </p>
       </div>
 
-      <div className='bg-[#e3dbcf] h-[90vh]'>
+      <div className='bg-[#e3dbcf] h-screen md:h-[40vh] lg:h-[90vh]'>
         <div>
-          <div key={item.id} className='flex justify-between p-15'>
+          <div key={item.id} className='flex flex-col gap-16 md:flex-row justify-between p-6 lg:p-15'>
             <div className='flex gap-8 flex-col'>
-               <p className='heading text-[30px] w-[70%]'>{item.description}</p> 
+               <p className='heading lg:text-[30px] lg:w-[70%]'>{item.description}</p> 
                <div className='flex flex-col gap-2'>
                 <p className='text-[22px] heading'>{item.name}</p>
                 <p className=' text-[16px] font-light flex items-center'><BadgeCheck size={30} className='inline' /> {item.batch}</p> 
                </div>
             </div> 
             <div className='flex flex-col'>
-              <div className='relative w-[300px] h-[432px]'>
+              <div className='relative w-[300px] h-[332px]  lg:w-[300px] lg:h-[432px]'>
                 <Image src={item.image} alt={item.name}  fill className='object-cover border-8 border-[#4a3129]' />
                 <p className='absolute bottom-4 left-4 text-[16px] text-[#4a3129] heading'>{item.title}</p>
               </div>

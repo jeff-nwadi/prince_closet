@@ -351,7 +351,7 @@ export default function Hero() {
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                <p className="sm:text-[16px] text-[#8a7d72] font-[400] leading-relaxed min-h-[50px]">
+                <p className="sm:text-[16px] text-[#8a7d72] w-full font-[400] leading-relaxed min-h-[50px]">
                   {outfits[activeIndex]?.description}
                 </p>
                 <div className="mt-4 flex flex-col">

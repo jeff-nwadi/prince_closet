@@ -342,7 +342,7 @@ export default function Hero() {
 
         {/* Active Product Details (Bottom Right) */}
         <div className="md:col-span-6 flex items-end justify-between gap-6 border-t border-[#4d3d30]/15 pt-4">
-          <div className="max-w-[420px]">
+          <div className="w-full">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIndex}
@@ -351,7 +351,7 @@ export default function Hero() {
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                <p className="sm:text-[16px] text-[#8a7d72] w-full font-[400] leading-relaxed min-h-[50px]">
+                <p className="md:text-[16px] text-[14px] text-[#8a7d72] w-full font-[400] leading-relaxed min-h-[50px]">
                   {outfits[activeIndex]?.description}
                 </p>
                 <div className="mt-4 flex flex-col">

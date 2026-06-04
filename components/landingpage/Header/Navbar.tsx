@@ -25,7 +25,7 @@ export default function Header() {
     }, []);
 
     return (
-        <div className={`fixed w-full box-border bg-[#f4f0ea] py-8 px-3 lg:px-16 z-50 border-b transition-colors duration-300 ${isScrolled ? 'border-[#dfcac3]' : 'border-transparent'}`}>
+        <div className={`fixed w-full box-border bg-[#f4f0ea] py-4 px-3 lg:px-16 z-50 border-b transition-colors duration-300 ${isScrolled ? 'border-[#dfcac3]' : 'border-transparent'}`}>
             <div className="flex justify-center text-[12px] sm:text-[15px] font-normal relative">
                 <Link href="/" className="absolute left-0 no-underline text-[#4A3129] heading text-[18px] md:text-[24px]">{t('brandName')}</Link>
                 <div onClick={() => {setIsActive(!isActive)}} className="flex items-center justify-center gap-2 cursor-pointer">

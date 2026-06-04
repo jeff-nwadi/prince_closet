@@ -211,7 +211,7 @@ export default function Hero() {
   return (
     <section 
       data-scroll-section 
-      className="min-h-screen bg-[#f4f0ea] pt-[120px] pb-[80px] px-6 sm:px-12 md:px-16 flex flex-col justify-between overflow-hidden relative select-none"
+      className="min-h-screen bg-[#f4f0ea] pt-[125px] pb-[80px] px-6 sm:px-12 md:px-16 flex flex-col justify-between overflow-hidden relative select-none"
     >
       {/* Background Staggered Lines / Accents for depth */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] border-y border-[#4d3d30]" />
@@ -219,7 +219,7 @@ export default function Hero() {
       {/* Top Header Block */}
       <div className="gap-6 z-10 flex justify-center items-center flex-col text-center w-full">
         <div className="flex flex-col items-center justify-center">
-          <h1 className="text-[25px] md:text-[40px] font-medium text-[#4d3d30] heading uppercase leading-tight">
+          <h1 className="text-[35px] md:text-[40px] font-medium text-[#4d3d30] heading uppercase leading-tight">
             New Arrivals
           </h1>
           <p className="mt-3 w-[80%] sm:w-[80%] md:w-[60%] text-base md:text-xl text-[#8a7d72] font-mono">

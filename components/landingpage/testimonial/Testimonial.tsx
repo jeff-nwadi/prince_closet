@@ -73,7 +73,7 @@ const Testimonial = () => {
 
       <div className='bg-[#e3dbcf] h-screen md:h-[40vh] lg:h-[90vh]'>
         <div>
-          <div key={item.id} className='flex flex-col gap-16 md:flex-row justify-between p-6 lg:p-15'>
+          <div key={item.id} className='flex flex-col gap-16 md:flex-row justify-between p-3 lg:p-15'>
             <div className='flex gap-8 flex-col'>
                <p className='heading lg:text-[30px] lg:w-[70%]'>{item.description}</p> 
                <div className='flex flex-col gap-2'>

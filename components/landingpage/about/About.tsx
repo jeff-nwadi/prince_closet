@@ -24,7 +24,7 @@ const About = () => {
     <div
       ref={ref}
       data-scroll-section
-      className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 py-16 lg:py-48 px-6 lg:px-16 overflow-hidden bg-[#4A3129] items-center"
+      className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 py-16 lg:py-48 px-3 lg:px-16 overflow-hidden bg-[#4A3129] items-center"
     >
       {/* Video Container - Parallax only on Desktop */}
       <div 

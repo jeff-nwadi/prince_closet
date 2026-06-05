@@ -73,6 +73,26 @@ export default function Hero() {
   const startXRef = useRef(0);
   const startTargetRef = useRef(0);
   const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wheelActiveRef = useRef(false);
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-advance every 3 seconds when user is not interacting
+  useEffect(() => {
+    const N = outfits.length;
+
+    const startAuto = () => {
+      autoScrollRef.current = setInterval(() => {
+        if (!isDraggingRef.current && !wheelActiveRef.current) {
+          targetRef.current = Math.round(targetRef.current) + 1;
+        }
+      }, 3000);
+    };
+
+    startAuto();
+    return () => {
+      if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     const updateSizes = () => {
@@ -101,8 +121,8 @@ export default function Hero() {
       // Calculate shortest path diff on a circular track
       const wrappedDiff = (((diff + N / 2) % N) + N) % N - N / 2;
       
-      // Weighted lerp interpolation: current += (target - current) * 0.08
-      currentRef.current += wrappedDiff * 0.08;
+      // Weighted lerp interpolation: current += (target - current) * 0.15
+      currentRef.current += wrappedDiff * 0.15;
       
       // Wrap current value within [0, N]
       currentRef.current = (currentRef.current % N + N) % N;
@@ -126,13 +146,15 @@ export default function Hero() {
 
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
+      wheelActiveRef.current = true;
       // Increase/decrease target fractionally based on wheel scroll delta
       targetRef.current += e.deltaY * 0.003;
 
       if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
       wheelTimeoutRef.current = setTimeout(() => {
         targetRef.current = Math.round(targetRef.current);
-      }, 150);
+        wheelActiveRef.current = false;
+      }, 300);
     };
 
     track.addEventListener('wheel', onWheel, { passive: false });

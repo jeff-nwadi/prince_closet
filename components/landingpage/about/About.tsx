@@ -30,7 +30,7 @@ const About = () => {
       <div 
         data-scroll={isDesktop ? "true" : undefined}
         data-scroll-speed={isDesktop ? "1.2" : undefined}
-        className="w-full relative aspect-[4/5] lg:aspect-[3/4] overflow-hidden bg-[#38231c] hidden md:flex rounded-sm group border border-[#f4f1eb]/10"
+        className="w-full relative aspect-[4/5] lg:aspect-[3/4] overflow-hidden bg-[#38231c] hidden lg:flex rounded-sm group border border-[#f4f1eb]/10"
       >
         <video
           className="w-full h-full object-cover opacity-95 transition-transform duration-700 ease-out group-hover:scale-105"

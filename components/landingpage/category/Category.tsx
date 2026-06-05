@@ -148,7 +148,7 @@ const Category = () => {
           Shop by category
         </motion.h2>
         <motion.h3
-          className='body-text lg:w-[30%] text-sm sm:text-base md:text-lg text-[#8a7d72] max-w-md font-mono leading-relaxed'
+          className='body-text w-[70%] md:w-[50%] lg:w-[30%] text-sm sm:text-base md:text-lg text-[#8a7d72] max-w-md font-mono leading-relaxed'
           variants={fadeUp}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}

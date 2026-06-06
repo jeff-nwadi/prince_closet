@@ -59,7 +59,7 @@ const Testimonial = () => {
       {/* Title block with entrance animation */}
       <div className="mb-16 lg:mb-24 px-3">
         <h2
-          className='heading w-[20%] text-[20px] md:text-[30px] text-[#4A3129] mb-4 uppercase'
+          className='heading w-[60%] md:w-[50%] text-[20px] lg:text-[30px] text-[#4A3129] mb-4 uppercase'
         >
           Proven Quality, Trusted By Many
         </h2>

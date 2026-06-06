@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     // sticky + z-0: sits beneath the page content (which has z-10 in layout)
     // and is revealed as you scroll to the bottom of the page
     <footer className="sticky bottom-0 z-0 w-full h-[35vh] lg:h-[55vh] bg-[#4a3129] flex justify-center items-center">
-      <div className="relative overflow-hidden w-full h-full flex justify-end px-12 text-right items-start py-12 text-[#efefef]">
+      <div className="relative overflow-hidden w-full h-full flex justify-end px-6 md:px-16 text-right items-start py-12 text-[#efefef]">
         <div className="flex flex-row space-x-12 sm:space-x-16 md:space-x-24 text-sm sm:text-lg md:text-xl">
           <ul className="flex flex-col gap-2 text-start">
             <Link href="/" className="hover:underline cursor-pointer">Home</Link>
@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
             <Link href="" className="hover:underline cursor-pointer">Hoodies</Link>
           </ul>
         </div>
-        <h2 className="absolute bottom-8 left-0 translate-y-1/3 text-[50px] heading sm:text-[100px] md:text-[140px] text-[#efefef] opacity-10 uppercase leading-none select-none">
+        <h2 className="absolute bottom-6 md:bottom-8 text-[45px] left-6 text-center sm:text-[80px] md:text-[90px] lg:text-[150px] heading text-[#efefef] opacity-10 uppercase leading-none select-none whitespace-nowrap tracking-wider">
           Prince&apos;s Closet
         </h2>
       </div>

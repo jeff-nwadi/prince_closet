@@ -74,14 +74,14 @@ const Testimonial = () => {
       <div className='bg-[#e3dbcf] h-screen md:h-[40vh] lg:h-[90vh]'>
         <div key={item.id} className='flex flex-col gap-16 md:flex-row justify-between p-6 lg:p-15'>
           <div className='flex gap-8 flex-col'>
-              <p className='heading lg:text-[30px] lg:w-[70%]'>{item.description}</p> 
+              <p className='heading text-[30px] lg:w-[70%]'>{item.description}</p> 
               <div className='flex flex-col gap-2'>
               <p className='text-[20px] heading'>{item.name}</p>
               <p className=' text-[16px] font-light flex items-center'><BadgeCheck size={30} className='inline' /> {item.batch}</p> 
               </div>
           </div> 
           <div className='flex flex-col items-center justify-center'>
-            <div className='relative w-[300px] h-[332px]  lg:w-[300px] lg:h-[432px]'>
+            <div className='relative w-[300px] h-[300px]  lg:w-[300px] lg:h-[432px]'>
               <Image src={item.image} alt={item.name}  fill className='object-cover border-8 border-[#4a3129]' />
               <p className='absolute bottom-4 left-4 text-[16px] text-[#4a3129] heading'>{item.title}</p>
             </div>

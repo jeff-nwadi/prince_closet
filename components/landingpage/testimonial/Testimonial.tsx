@@ -74,7 +74,7 @@ const Testimonial = () => {
       <div className='bg-[#e3dbcf] h-screen md:h-[40vh] lg:h-[90vh]'>
         <div key={item.id} className='flex flex-col gap-16 md:flex-row justify-between p-6 lg:p-15'>
           <div className='flex gap-8 flex-col'>
-              <p className='heading text-[30px] lg:w-[70%]'>{item.description}</p> 
+              <p className='heading text-[22px]  lg:text-[30px] lg:w-[70%]'>{item.description}</p> 
               <div className='flex flex-col gap-2'>
               <p className='text-[20px] heading'>{item.name}</p>
               <p className=' text-[16px] font-light flex items-center'><BadgeCheck size={30} className='inline' /> {item.batch}</p> 
@@ -89,7 +89,7 @@ const Testimonial = () => {
               <Link href={item.href} className='text-[16px] text-[#4a3129] '>View Product</Link>
             </div>
           </div>
-        </div>
+        </div> 
 
         {/* Carousel dot navigation */}
         <div className='flex gap-2 px-15 pb-8 justify-center'>

@@ -19,9 +19,10 @@ interface NavBodyProps {
     links: LinkType[];
     selectedLink: SelectedLinkType;
     setSelectedLink: React.Dispatch<React.SetStateAction<SelectedLinkType>>;
+    onLinkClick?: () => void;
 }
 
-export default function Body({links, selectedLink, setSelectedLink}: NavBodyProps) {
+export default function Body({links, selectedLink, setSelectedLink, onLinkClick}: NavBodyProps) {
 
     const getChars = (word: string) => {
         const chars: React.JSX.Element[] = [];
@@ -45,7 +46,7 @@ export default function Body({links, selectedLink, setSelectedLink}: NavBodyProp
         {
             links.map( (link, index) => {
                 const { title, href } = link;
-                return <Link key={`l_${index}`} href={href} className="text-black no-underline">
+                return <Link key={`l_${index}`} href={href} className="text-black no-underline" onClick={onLinkClick}>
                 <motion.p 
                     className="m-0 flex overflow-hidden text-[15px] pr-[30px] pt-[10px] font-light min-[1000px]:text-[2vw] min-[1000px]:pr-[2vw]"
                     onMouseOver={() => {setSelectedLink({isActive: true, index})}} 

@@ -26,7 +26,7 @@ const TestimonialCards = [
     name: "David Martins",
     title: "Best Product",
     batch: "Verified Buyer",
-    description: "The fit is perfect, the quality is amazing, and the color is even better in person.",
+    description: "The fit is perfect, the quality is amazing, and the color is even better in person. True to size and feels really durable.",
     href: "/product/"
   },
   {
@@ -68,10 +68,10 @@ const Testimonial = () => {
           
         >
           Explore our curated collections of earth-toned essentials made for daily living.
-        </p>
+        </p> 
       </div>
 
-      <div className='bg-[#e3dbcf] h-[130vh] md:h-[40vh] lg:h-[90vh]'>
+      <div className='bg-[#e3dbcf] h-[130vh] md:h-[40vh] lg:h-[90vh]'> 
         <div key={item.id} className='flex flex-col gap-16 md:flex-row justify-between p-6 lg:p-15'>
           <div className='flex gap-8 flex-col'>
               <p className='heading text-[22px]  lg:text-[30px] lg:w-[70%]'>{item.description}</p> 

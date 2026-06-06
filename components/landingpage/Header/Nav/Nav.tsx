@@ -58,7 +58,7 @@ const linksBrand = [
 ]
 
 
-export default function Index() {
+export default function Index({ onClose }: { onClose: () => void }) {
 
   const [selectedLink, setSelectedLink] = useState({isActive: false, index: 0});
   const [selectedLinkBrand, setSelectedLinkBrand] = useState({isActive: false, index: 0});
@@ -68,10 +68,10 @@ export default function Index() {
       <div className="flex gap-[10px] mb-[30px] min-[1000px]:mb-0 min-[1000px]:justify-between">
         <div className="flex justify-between">
           <div className='flex-col justify-between'>
-             <Body links={links} selectedLink={selectedLink} setSelectedLink={setSelectedLink}/>
+             <Body links={links} selectedLink={selectedLink} setSelectedLink={setSelectedLink} onLinkClick={onClose}/>
           </div>
          <div className='flex-col justify-between'>
-          <Body links={linksBrand} selectedLink={selectedLinkBrand} setSelectedLink={setSelectedLinkBrand}/>
+          <Body links={linksBrand} selectedLink={selectedLinkBrand} setSelectedLink={setSelectedLinkBrand} onLinkClick={onClose}/>
          </div>
         </div>
         <Image src={linksBrand[selectedLinkBrand.index].src} isActive={selectedLinkBrand.isActive}/>

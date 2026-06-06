@@ -257,7 +257,7 @@ export default function Hero() {
             Curated earth tones and organic textures. Built for the season ahead.
           </p>
           <button className="mt-6 flex items-center justify-between gap-3 border border-[#4d3d30]/30 hover:border-[#4d3d30] transition-colors py-2.5 px-5 bg-transparent text-[#4d3d30] text-sm tracking-wider uppercase group cursor-pointer">
-            <span>Explore All</span>
+            <Link href="/shop">Explore All</Link>
             <span className="w-5 h-5 flex items-center justify-center border border-[#4d3d30]/20 rounded-full group-hover:bg-[#4d3d30] group-hover:text-[#f4f0ea] transition-all duration-300">
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
                 <path d="M1 9L9 1M9 1H3M9 1V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

@@ -18,7 +18,7 @@ const TestimonialCards = [
     title: "Best Quality",
     batch: "Verified Buyer",
     description: "Flawless fit, and the color is even richer in person than it appeared online. The fabric feels substantial and built to last. Definitely a new wardrobe staple!",
-    href: "/product/"
+    href: "/shop/4"
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ const TestimonialCards = [
     title: "Best Product",
     batch: "Verified Buyer",
     description: "The fit is perfect, the quality is amazing, and the color is even better in person. True to size and feels really durable.",
-    href: "/product/"
+    href: "/shop/6"
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const TestimonialCards = [
     title: "Best Design",
     batch: "Verified Buyer",
     description: "I'm impressed! The material is top-notch and feels premium. It's the kind of quality you can rely on for everyday wear without worrying about it losing shape.",
-    href: "/product/"
+    href: "/shop/2"
   }
 ]
 

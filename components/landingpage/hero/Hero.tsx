@@ -3,65 +3,74 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const outfits = [
   {
     id: 1,
-    title: "Denim Tiered Dress",
-    price: "$145",
-    description: "Structured raw denim dress featuring a tiered ruffled skirt, cropped denim jacket top, and elegant contrast stitching. Designed for a bold, contemporary look.",
+    productId: 4,
+    title: "Relaxed Cargo Trousers",
+    price: "€110",
+    description: "Wide-leg cargo trousers with a relaxed silhouette. Features multiple utility pockets and a drawstring waist.",
     src: "/images/img_1.png",
     offset: "translate-y-[80px] md:translate-y-[120px]", // staggered down
     speed: "0.5",
   },
   {
     id: 2,
-    title: "Raw Denim Jeans",
-    price: "$120",
-    description: "Classic relaxed fit jeans crafted in deep indigo that develops unique character and fade patterns through organic wear.",
+    productId: 6,
+    title: "Denim Tiered Dress",
+    price: "€145",
+    description: "A tiered denim dress with a flattering A-line silhouette. Made from sustainable denim with a soft, worn-in feel.",
     src: "/images/img_2.png",
     offset: "translate-y-[30px] md:translate-y-[40px]", // staggered middle-down
     speed: "1.2",
   },
   {
     id: 3,
-    title: "Core Wash Tee",
-    price: "$55",
-    description: "Heavyweight organic cotton tee with a custom vertical dip-dye graphic. Featuring dropped shoulders and a thick ribbed crewneck.",
+    productId: 2,
+    title: "Linen Blend Shorts",
+    price: "€75",
+    description: "Relaxed linen blend shorts with an elasticated waistband and adjustable drawcord. Designed for style and comfort in warm weather.",
     src: "/images/img_3.png",
     offset: "-translate-y-[30px] md:-translate-y-[60px]", // staggered high up
     speed: "-0.8",
   },
   {
     id: 4,
-    title: "Relaxed Cargo Trousers",
-    price: "$110",
-    description: "Utilitarian cargo trousers featuring a relaxed silhouette, clean lines, and deep side cargo pockets for functional design.",
+    productId: 1,
+    title: "Classic Logo Tee",
+    price: "€89",
+    description: "A premium heavyweight organic cotton tee featuring our signature classic logo chest print. Relaxed fit, breathable, and built to last.",
     src: "/images/tees.png",
     offset: "translate-y-[60px] md:translate-y-[90px]", // staggered low
     speed: "0.9",
   },
   {
     id: 5,
+    productId: 5,
     title: "Minimalist Cap",
-    price: "$35",
-    description: "Structured six-panel cap in organic twill with an adjustable back closure and subtle, tonally embroidered branding.",
-    src: "/images/img_5.png",
+    price: "€35",
+    description: "A clean, unstructured cap with a curved brim. One size fits all with an adjustable back strap.",
+    src: "/images/cap.png",
     offset: "-translate-y-[10px] md:-translate-y-[20px]", // staggered middle-high
     speed: "-0.3",
   },
   {
     id: 6,
-    title: "Minimalist Cap",
-    price: "$35",
-    description: "Structured six-panel cap in organic twill with an adjustable back closure and subtle, tonally embroidered branding.",
-    src: "/images/img_5.png",
+    productId: 3,
+    title: "Oversized Hoodie",
+    price: "€110",
+    description: "An oversized fit hoodie made from thick loopback cotton fleece. Features a double-layered hood and drop shoulders.",
+    src: "/images/hoddies.png",
     offset: "-translate-y-[10px] md:-translate-y-[20px]", // staggered middle-high
     speed: "-0.3",
   }
 ];
 
 export default function Hero() {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(2); // Start centered on the third card (img_3)
   const trackRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -290,8 +299,12 @@ export default function Hero() {
               <div 
                 key={outfit.id}
                 onClick={() => {
-                  // Scroll to this card if clicked
-                  targetRef.current = targetRef.current + diff;
+                  if (index === activeIndex) {
+                    router.push(`/shop/${outfit.productId}`);
+                  } else {
+                    // Scroll to this card if clicked
+                    targetRef.current = targetRef.current + diff;
+                  }
                 }}
                 style={{
                   transform: `translate3d(${x}px, ${-y}px, 0) scale(${scale})`,
@@ -388,11 +401,14 @@ export default function Hero() {
             </AnimatePresence>
           </div>
 
-          <button className="flex-shrink-0 w-12 h-12 flex items-center justify-center border border-[#4d3d30]/30 rounded-none bg-transparent text-[#4d3d30] cursor-pointer transition-all duration-300 hover:bg-[#4d3d30] hover:text-[#f4f0ea] group">
+          <Link 
+            href={`/shop/${outfits[activeIndex]?.productId}`}
+            className="flex-shrink-0 w-12 h-12 flex items-center justify-center border border-[#4d3d30]/30 rounded-none bg-transparent text-[#4d3d30] cursor-pointer transition-all duration-300 hover:bg-[#4d3d30] hover:text-[#f4f0ea] group"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
               <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </button>
+          </Link>
         </div>
       </div>
     </section>

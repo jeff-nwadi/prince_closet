@@ -5,6 +5,8 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import Image from 'next/image'
 import { motion } from 'motion/react'
+import { ArrowLeft } from 'lucide-react';
+import { products } from '@/lib/products'
 
 const links = [
   { title: "All" , category: "all", href: "/shop" },
@@ -15,56 +17,7 @@ const links = [
   { title: "Headwear" , category: "headwear", href: "/shop?category=headwear" },
 ] 
 
-const products =[
-  { id: 1,
-    image:"/images/tees.png",
-    title: "core wash tee",
-    price: "$55",
-    category: "new-arrival",
-    link: "/shop/1"
-   },
-   {
-    id: 2,
-    image:"/images/img_1.png",
-    title: "relaxed cargo trousers",
-    price: "$110",
-    category: "new-arrival",
-    link: "/shop/2"
-   },
-   {
-    id: 3,
-    title: "Denim Tiered Dress",
-    price: "$145",
-    category: "new-arrival",
-    image:"/images/img_2.png",
-    link: "/shop/3"
-   },
-   {
-    id: 4,
-    title: "raw denim jeans",
-    price: "$120",
-    category: "new-arrival",
-    image:"/images/img_3.png",
-    link: "/shop/4"
-   },
-   {
-    id: 5,
-    title: "minimalist cap",
-    price: "$35",
-    category: "new-arrival",
-    image:"/images/cap.png",
-    link: "/shop/5"
-   },
-   {
-    id: 6,
-    title: "core wash tee",
-    price: "$55",
-    category: "new-arrival",
-    image:"/images/tees.png",
-    link: "/shop/6"
-   },
-   
-]
+
 
 // Animation variants
 const fadeUp = {
@@ -90,9 +43,14 @@ const ShopContent = () => {
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get('category') || 'all';
 
+  const filteredProducts = currentCategory === 'all'
+    ? products
+    : products.filter(product => product.category === currentCategory);
+
   return (
     <div>
       <section className='min-h-screen pt-28 pb-20 px-6 sm:px-12 md:px-16'> 
+        {/* <Link href="/" className='text-[#4a3129] hover:text-[#4A3129]/80 font-normal uppercase text-[14px] md:text-[16px] flex items-center mb-6'> <ArrowLeft size={20} className='inline-block mr-2' /> Home</Link> */}
 
         {/* Header */}
         <motion.div
@@ -115,7 +73,7 @@ const ShopContent = () => {
           </motion.p>
 
           <motion.div variants={fadeUp} className='pt-10'>
-            <p className='text-[14px] md:text-[16px] font-normal text-[#4a3129]'>16 items</p>
+            <p className='text-[14px] md:text-[16px] font-normal text-[#4a3129]'>{filteredProducts.length} {filteredProducts.length === 1 ? 'item' : 'items'}</p>
           </motion.div> 
         </motion.div> 
 
@@ -161,7 +119,7 @@ const ShopContent = () => {
             animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.4 } } }}
           >
-            {products.map((product, index) => (
+            {filteredProducts.map((product, index) => (
               <motion.div
                 key={product.id}
                 variants={cardVariants}
@@ -169,11 +127,19 @@ const ShopContent = () => {
               >
                 <Link href={product.link} className='group flex flex-col gap-4 bg-[#e3dbcf] pt-3 pr-3 pl-3 pb-4'>
                   <div className='w-full h-[400px] bg-gray-200 overflow-hidden relative'>
+                    {/* Primary image */}
                     <Image 
                       src={product.image}
                       alt={product.title}
                       fill
-                      className='object-cover transition-transform duration-700 ease-out group-hover:scale-105'
+                      className='object-cover transition-opacity duration-500 ease-in-out group-hover:opacity-0'
+                    />
+                    {/* Hover image */}
+                    <Image 
+                      src={product.hoverImage}
+                      alt={product.title}
+                      fill
+                      className='object-cover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100'
                     />
                   </div>
                   <div className='flex justify-between w-full gap-2'>

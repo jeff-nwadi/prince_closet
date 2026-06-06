@@ -66,6 +66,7 @@ const About = () => {
   return (
     <div
       ref={ref}
+      id="about"
       data-scroll-section
       className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 py-16 lg:py-48 px-3 lg:px-16 overflow-hidden bg-[#4A3129] items-center"
     >

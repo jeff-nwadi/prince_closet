@@ -17,42 +17,42 @@ const links = [
   },
   {
     title: "About",
-    href: "/about",
+    href: "/#about",
   },
   {
     title: "Lookbook",
-    href: "/lookbook",
+    href: "/#bestsellers",
   },
   {
     title: "Contact",
-    href: "/contact",
+    href: "mailto:contact@princescloset.com",
   }
 ]
 
 const linksBrand = [
   {
     title: "New Arrivals",
-    href: "/new-arrivals",
+    href: "/shop?category=new-arrival",
     src: "img_1.png"
   },
   {
     title: "Jeans",
-    href: "/designer",
+    href: "/shop?category=bottoms-wears",
     src: "img_2.png"
   },
   {
     title: "Tees",
-    href: "/t-shirts",
+    href: "/shop?category=tees",
     src: "tees.png"
   },
   {
     title: "Hoddies & Sweatshirts",
-    href: "/hoodies-sweatshirts",
+    href: "/shop?category=hoodies",
     src: "hoddies.png"
   },
   {
     title: "Headwear",
-    href: "/headwear",
+    href: "/shop?category=headwear",
     src: "cap.png"
   }
 ]

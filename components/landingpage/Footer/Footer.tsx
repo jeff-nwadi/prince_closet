@@ -11,15 +11,15 @@ const Footer: React.FC = () => {
           <ul className="flex flex-col gap-2 text-start">
             <Link href="/" className="hover:underline cursor-pointer">Home</Link>
             <Link href="/shop" className="hover:underline cursor-pointer">Shop</Link>
-            <Link href="/about" className="hover:underline cursor-pointer">About</Link>
-             <Link href="" className="hover:underline cursor-pointer">Contact Us</Link>
+            <Link href="/#about" className="hover:underline cursor-pointer">About</Link>
+            <Link href="mailto:contact@princescloset.com" className="hover:underline cursor-pointer">Contact Us</Link>
           </ul>
           <ul className="flex flex-col gap-2 text-start">
-            <Link href="" className="hover:underline cursor-pointer">New Arrivals</Link>
-            <Link href="" className="hover:underline cursor-pointer">Best Sellers</Link>
-            <Link href="" className="hover:underline cursor-pointer">Jeans</Link>
-            <Link href="" className="hover:underline cursor-pointer">Tees</Link>
-            <Link href="" className="hover:underline cursor-pointer">Hoodies</Link>
+            <Link href="/shop?category=new-arrival" className="hover:underline cursor-pointer">New Arrivals</Link>
+            <Link href="/#bestsellers" className="hover:underline cursor-pointer">Best Sellers</Link>
+            <Link href="/shop?category=bottoms-wears" className="hover:underline cursor-pointer">Jeans</Link>
+            <Link href="/shop?category=tees" className="hover:underline cursor-pointer">Tees</Link>
+            <Link href="/shop?category=hoodies" className="hover:underline cursor-pointer">Hoodies</Link>
           </ul>
         </div>
         <h2 className="absolute bottom-6 md:bottom-8 text-[45px] left-6 text-center sm:text-[80px] md:text-[90px] lg:text-[150px] heading text-[#efefef] opacity-10 uppercase leading-none select-none whitespace-nowrap tracking-wider">

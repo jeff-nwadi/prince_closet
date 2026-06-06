@@ -77,7 +77,7 @@ const Bestsellers = () => {
   const ref = useRef<HTMLDivElement>(null)
   const { isInView } = useInView(ref, { margin: '-80px' })
   return (
-    <div ref={ref} data-scroll-section className='py-20 lg:py-32 px-3 lg:px-16 bg-[#f4f0ea]'>
+    <div ref={ref} id="bestsellers" data-scroll-section className='py-20 lg:py-32 px-3 lg:px-16 bg-[#f4f0ea]'>
         {/* Title block with entrance animation */}
       <div className="mb-16 lg:mb-24">
         <motion.h2

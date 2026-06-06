@@ -71,7 +71,7 @@ const Testimonial = () => {
         </p>
       </div>
 
-      <div className='bg-[#e3dbcf] h-screen md:h-[40vh] lg:h-[90vh]'>
+      <div className='bg-[#e3dbcf] h-[130vh] md:h-[40vh] lg:h-[90vh]'>
         <div key={item.id} className='flex flex-col gap-16 md:flex-row justify-between p-6 lg:p-15'>
           <div className='flex gap-8 flex-col'>
               <p className='heading text-[22px]  lg:text-[30px] lg:w-[70%]'>{item.description}</p> 

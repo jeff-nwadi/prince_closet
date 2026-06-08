@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import Image from 'next/image'
 import { motion } from 'motion/react'
-import { ArrowLeft } from 'lucide-react';
 import { products } from '@/lib/products'
 
 const links = [
@@ -41,7 +40,9 @@ const cardVariants = {
 
 const ShopContent = () => {
   const searchParams = useSearchParams();
-  const currentCategory = searchParams.get('category') || 'all';
+  // Use null check — null means no ?category param, i.e. "All"
+  const categoryParam = searchParams.get('category');
+  const currentCategory = categoryParam ?? 'all';
 
   const filteredProducts = currentCategory === 'all'
     ? products
@@ -86,7 +87,12 @@ const ShopContent = () => {
             variants={{ visible: { transition: { staggerChildren: 0.08, delayChildren: 0.2 } } }}
           >
             {links.map((link, index) => {
-              const isActive = currentCategory === link.category;
+              // For "All": active when there is NO category param in the URL
+              // For others: active when categoryParam exactly matches
+              const isActive = link.category === 'all'
+                ? categoryParam === null
+                : categoryParam === link.category;
+
               return (
                 <motion.div
                   key={index}
@@ -97,6 +103,7 @@ const ShopContent = () => {
                 >
                   <Link 
                     href={link.href} 
+                    scroll={false}
                     className={`transition-all duration-300 uppercase font-normal px-4 py-2 border border-[#4A3129] ${
                       isActive 
                         ? 'bg-[#4A3129] text-white' 
@@ -111,9 +118,10 @@ const ShopContent = () => {
           </motion.div>
         </div>
 
-        {/* Product grid */}
+        {/* Product grid — key forces re-mount/re-animate on category change */}
         <div>
           <motion.div
+            key={currentCategory}
             className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
             initial="hidden"
             animate="visible"
@@ -161,6 +169,7 @@ const ShopContent = () => {
         >
           <Link
             href="/shop"
+            scroll={false}
             className="bg-[#e3dbcf] text-[#4a3129] border transition-all duration-300 hover:bg-[#4a3129] hover:text-white border-[#4A3129] uppercase text-[16px] font-normal px-4 py-2"
           >
             Load More

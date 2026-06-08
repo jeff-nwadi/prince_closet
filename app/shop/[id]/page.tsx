@@ -4,6 +4,10 @@ import Image from 'next/image'
 import { products } from '@/lib/products'
 import ProductGallery from '@/components/Shop/ProductGallery'
 
+export function generateStaticParams() {
+  return products.map((p) => ({ id: String(p.id) }))
+}
+
 export default async function Page({
   params,
 }: {

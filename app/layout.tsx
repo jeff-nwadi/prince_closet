@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/landingpage/Header/Navbar";
 import Footer from "@/components/landingpage/Footer/Footer";
+import { CartProvider } from "@/lib/cartContext";
+
 
 const satoshi = localFont({
   src: [
@@ -76,11 +78,13 @@ export default function RootLayout({
       className={`${satoshi.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-satoshi">
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <CartProvider>
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

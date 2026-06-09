@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { products } from '@/lib/products'
 import ProductGallery from '@/components/Shop/ProductGallery'
+import AddToCart from '@/components/Shop/AddToCart'
 
 export function generateStaticParams() {
   return products.map((p) => ({ id: String(p.id) }))
@@ -53,21 +54,6 @@ export default async function Page({
             {product.description}
           </p>
 
-          {/* Sizes */}
-          <div>
-            <p className='text-xs uppercase tracking-widest text-[#4a3129] mb-3'>Select Size</p>
-            <div className='flex flex-wrap gap-2'>
-              {product.sizes.map((size) => (
-                <button
-                  key={size}
-                  className='px-4 py-2 border border-[#4A3129] text-[#4a3129] uppercase text-sm font-normal hover:bg-[#4a3129] hover:text-white transition-all duration-300'
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Accordions */}
           <div className='border-t border-[#4a3129]/20 mt-2'>
             {['Material', 'Care', 'Shipping'].map((label) => (
@@ -79,23 +65,21 @@ export default async function Page({
                 <p className='text-sm text-[#4a3129]/70 pb-4 leading-relaxed'>
                   {label === 'Material' && 'Crafted from 100% organic, sustainably sourced materials.'}
                   {label === 'Care' && 'Machine wash cold. Tumble dry low. Do not bleach.'}
-                  {label === 'Shipping' && 'Free standard shipping on orders over $100. Express available at checkout.'}
+                  {label === 'Shipping' && 'Free standard shipping on orders over €100. Express available at checkout.'}
                 </p>
               </details>
             ))}
           </div>
 
-          {/* Quantity + Add to cart */}
-          <div className='flex flex-col gap-3 mt-2'>
-            <div className='flex items-center border border-[#4A3129] w-fit'>
-              <button className='px-4 py-3 text-[#4a3129] hover:bg-[#4a3129] hover:text-white transition-all duration-200 text-lg leading-none'>−</button>
-              <span className='px-6 py-3 text-sm text-[#4a3129] border-x border-[#4a3129]/30 min-w-[48px] text-center'>1</span>
-              <button className='px-4 py-3 text-[#4a3129] hover:bg-[#4a3129] hover:text-white transition-all duration-200 text-lg leading-none'>+</button>
-            </div>
-            <button className='w-full bg-[#4A3129] text-white uppercase text-sm font-normal py-4 tracking-widest hover:bg-[#4a3129]/80 transition-all duration-300'>
-              Add to Bag
-            </button>
-          </div>
+          {/* Size selector + Quantity + Add to Bag — client island */}
+          <AddToCart
+            id={product.id}
+            title={product.title}
+            price={product.price}
+            image={product.image}
+            sizes={product.sizes}
+            link={product.link}
+          />
         </div>
       </div>
 

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/components/landingpage/Header/Navbar";
-import Footer from "@/components/landingpage/Footer/Footer";
 import { CartProvider } from "@/lib/cartContext";
 
 
@@ -79,11 +77,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-satoshi">
         <CartProvider>
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          {children}
         </CartProvider>
       </body>
     </html>

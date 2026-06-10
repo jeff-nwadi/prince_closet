@@ -7,6 +7,7 @@ import '@/i18n';
 import { opacity, background } from './anim';
 import Nav from './Nav/Nav';
 import { useCart } from '@/lib/cartContext';
+import { User } from 'lucide-react';
 
 
 export default function Header() {
@@ -32,15 +33,15 @@ export default function Header() {
                 <div onClick={() => {setIsActive(!isActive)}} className="absolute left-0 flex items-center gap-2 cursor-pointer z-10">
                     <div className={`w-[22.5px] relative pointer-events-none before:content-[''] after:content-[''] before:h-[1px] after:h-[1px] before:w-full after:w-full before:bg-black after:bg-black before:relative after:relative before:block after:block before:transition-all after:transition-all before:duration-1000 after:duration-1000 before:ease-[cubic-bezier(0.76,0,0.24,1)] after:ease-[cubic-bezier(0.76,0,0.24,1)] ${isActive ? "before:-rotate-45 before:top-[1px] after:rotate-45 after:-top-[1px]" : "before:top-[4px] after:-top-[4px]"}`}></div>
                     <div className="relative flex items-center">
-                        <motion.p variants={opacity} animate={!isActive ? "open" : "closed"} className="m-0 text-[16px] md:text-[20px]">{t('menu')}</motion.p>
+                        <motion.p variants={opacity} animate={!isActive ? "open" : "closed"} className="m-0 text-[16px] md:text-[20px]"><span className='hidden md:flex'>{t('menu')}</span> </motion.p>
                         <motion.p variants={opacity} animate={isActive ? "open" : "closed"} className="m-0 absolute opacity-0 text-[16px] md:text-[20px]">{t('close')}</motion.p>
                     </div>
                 </div>
                 <Link href="/" className="no-underline text-[#4A3129] heading text-[18px] md:text-[24px] z-10 select-none">
-                    {/* <span className="md:hidden">P Closet</span> */}
                     <span className="inline">{t('brandName')}</span>
                 </Link>
-                <motion.div variants={opacity} animate={!isActive ? "open" : "closed"} className="flex gap-[30px] absolute right-0 items-center z-10">
+                <motion.div variants={opacity} animate={!isActive ? "open" : "closed"} className="flex gap-6 md:gap-[30px] absolute right-0 items-center z-10">
+                    <Link href="/login" className='flex md:hidden m-0 hover:opacity-60 transition-opacity'><User/> </Link>
                     <Link href="/login" className="hidden sm:block m-0 hover:opacity-60 transition-opacity">{t('Login')}</Link>
                     <Link href="/signup" className="hidden sm:block m-0 hover:opacity-60 transition-opacity">{t('Create Account')}</Link>
                     <Link href="/cart" className="flex items-center justify-center gap-2 cursor-pointer relative">
@@ -59,4 +60,4 @@ export default function Header() {
             </AnimatePresence>
         </div>
     )
-}
+}

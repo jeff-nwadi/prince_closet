@@ -68,7 +68,7 @@ const ShopContent = () => {
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className='text-[16px] font-normal text-[#4a3129] lg:w-[28%]'
+            className='text-[16px] font-normal text-[#8a7d72] w-[60%] md:w-[40%] lg:w-[28%]'
           >
             Browse the full collection. Every sustainable piece we offer, all in one place.
           </motion.p>

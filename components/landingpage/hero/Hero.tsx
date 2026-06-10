@@ -250,7 +250,7 @@ export default function Hero() {
       {/* Top Header Block */}
       <div className="gap-6 z-10 flex justify-center items-center flex-col text-center w-full">
         <div className="flex flex-col items-center justify-center">
-          <h1 className="text-[35px] md:text-[40px] font-medium text-[#4d3d30] heading uppercase leading-tight">
+          <h1 className="text-[30px] md:text-[40px] font-medium text-[#4d3d30] heading uppercase leading-tight">
             New Arrivals
           </h1>
           <p className="mt-3 w-[80%] sm:w-[80%] md:w-[60%] text-base md:text-xl text-[#8a7d72] font-mono">
@@ -386,7 +386,7 @@ export default function Hero() {
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                <p className="md:text-[16px] text-[14px] text-[#8a7d72] w-full font-[400] leading-relaxed min-h-[50px]">
+                <p className="md:text-[16px] text-[14px] text-[#8a7d72] w-[90%] md:w-[70%] font-normal leading-relaxed min-h-[50px]">
                   {outfits[activeIndex]?.description}
                 </p>
                 <div className="mt-4 flex flex-col">

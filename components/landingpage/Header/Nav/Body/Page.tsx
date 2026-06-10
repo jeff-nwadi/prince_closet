@@ -48,7 +48,7 @@ export default function Body({links, selectedLink, setSelectedLink, onLinkClick}
                 const { title, href } = link;
                 return <Link key={`l_${index}`} href={href} className="text-black no-underline" onClick={onLinkClick}>
                 <motion.p 
-                    className="m-0 flex overflow-hidden text-[15px] pr-[30px] pt-[10px] font-light min-[1000px]:text-[2vw] min-[1000px]:pr-[2vw]"
+                    className="m-0 flex overflow-hidden text-[18px] pr-[30px] pt-[10px] font-light min-[1000px]:text-[2vw] min-[1000px]:pr-[2vw]"
                     onMouseOver={() => {setSelectedLink({isActive: true, index})}} 
                     onMouseLeave={() => {setSelectedLink({isActive: false, index})}} 
                     variants={blur} 

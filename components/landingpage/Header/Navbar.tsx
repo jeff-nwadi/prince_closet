@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
 import '@/i18n';
 import { opacity, background } from './anim';
 import Nav from './Nav/Nav';
@@ -15,11 +16,22 @@ export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const userMenuRef = useRef<HTMLDivElement>(null);
     
+    const router = useRouter();
     const { t } = useTranslation();
     const { cartCount } = useCart();
     const { data: session, isPending } = authClient.useSession();
+
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+            setIsSearchOpen(false);
+            setSearchQuery('');
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -74,42 +86,44 @@ export default function Header() {
                     </button>
 
                     {isPending ? (
-                        <div className="hidden sm:block w-[100px]"></div>
+                        <div className="w-[20px] h-[20px] animate-pulse bg-[#dfcac3] rounded-full"></div>
                     ) : session ? (
                         <div className="relative" ref={userMenuRef}>
                             <button 
                                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} 
-                                className="flex items-center gap-2 hover:opacity-60 transition-opacity"
+                                className="flex items-center justify-center hover:opacity-60 transition-opacity"
                             >
-                                <span className="text-[#4A3129] font-medium text-[13px] sm:text-[15px] truncate max-w-[80px] sm:max-w-[100px]">Hi, {session.user.name.split(' ')[0]}</span>
-                                <ChevronDown size={14} className={`transition-transform duration-300 text-[#4A3129] ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                                <User size={20} strokeWidth={1.5} className={isUserMenuOpen ? 'text-black' : 'text-[#4D3D30]'} />
                             </button>
                             
                             <AnimatePresence>
                                 {isUserMenuOpen && (
                                     <motion.div 
-                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        initial={{ opacity: 0, y: 15, scale: 0.9 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="absolute right-0 top-full mt-4 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 flex flex-col overflow-hidden"
+                                        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                                        className="absolute right-0 top-full mt-4 w-56 bg-white/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 py-2 flex flex-col overflow-hidden ring-1 ring-black/5"
                                     >
-                                        <Link href="/dashboard" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-[#4A3129] transition-colors text-[14px]">
-                                            <LayoutDashboard size={16} /> <span>Dashboard</span>
+                                        <div className="px-5 py-3 border-b border-[#dfcac3]/30">
+                                            <p className="text-[#4A3129] font-medium text-[15px] truncate">Hi, {session.user.name}</p>
+                                            <p className="text-[#4A3129]/60 text-[12px] truncate">{session.user.email}</p>
+                                        </div>
+                                        <Link href="/dashboard" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-5 py-3.5 hover:bg-[#dfcac3]/20 text-[#4A3129] transition-all duration-200 text-[14px] font-medium group">
+                                            <LayoutDashboard size={18} className="text-[#4A3129]/60 group-hover:text-[#4A3129] transition-colors" /> <span>Dashboard</span>
                                         </Link>
-                                        <button onClick={async () => { await authClient.signOut(); window.location.reload(); }} className="flex items-center gap-3 px-4 py-3 hover:bg-red-50 text-red-600 transition-colors w-full text-left text-[14px]">
-                                            <LogOut size={16} /> <span>Logout</span>
+                                        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#dfcac3]/30 to-transparent my-1"></div>
+                                        <button onClick={async () => { await authClient.signOut(); window.location.reload(); }} className="flex items-center gap-3 px-5 py-3.5 hover:bg-red-50/50 text-red-600 transition-all duration-200 w-full text-left text-[14px] font-medium group">
+                                            <LogOut size={18} className="text-red-500/60 group-hover:text-red-600 transition-colors" /> <span>Logout</span>
                                         </button>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
                     ) : (
-                        <>
-                            <Link href="/login" className='flex sm:hidden m-0 hover:opacity-60 transition-opacity'><User size={20} strokeWidth={1.5} color="#4D3D30" /> </Link>
-                            <Link href="/login" className="hidden sm:block m-0 hover:opacity-60 transition-opacity text-[#4A3129]">{t('Login')}</Link>
-                            <Link href="/signup" className="hidden sm:block m-0 hover:opacity-60 transition-opacity text-[#4A3129]">{t('Create Account')}</Link>
-                        </>
+                        <Link href="/login" className='m-0 hover:opacity-60 transition-opacity flex items-center'>
+                            <User size={20} strokeWidth={1.5} color="#4D3D30" />
+                        </Link>
                     )}
                     
                     {/* Cart Icon */}
@@ -137,31 +151,38 @@ export default function Header() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-[100px] px-4"
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="fixed inset-0 z-[60] bg-[#4A3129]/20 backdrop-blur-md flex items-start justify-center pt-[15vh] px-4"
                         onClick={() => setIsSearchOpen(false)}
                     >
                         <motion.div 
-                            initial={{ scale: 0.95, opacity: 0, y: -20 }}
+                            initial={{ scale: 0.9, opacity: 0, y: -30 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.95, opacity: 0, y: -20 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                            transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-[#f4f0ea] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex items-center p-2 border border-[#dfcac3]"
+                            className="bg-white/80 backdrop-blur-2xl w-full max-w-3xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden p-3 border border-white/60 ring-1 ring-[#dfcac3]/30 group"
                         >
-                            <Search size={24} className="text-[#4A3129]/50 ml-3 shrink-0" />
-                            <input 
-                                type="text" 
-                                placeholder="Search for products, collections..." 
-                                className="w-full bg-transparent border-none outline-none py-3 px-4 text-[16px] md:text-lg text-[#4A3129] placeholder:text-[#4A3129]/50 font-satoshi"
-                                autoFocus
-                            />
-                            <button 
-                                onClick={() => setIsSearchOpen(false)} 
-                                className="mr-2 p-2 rounded-full hover:bg-[#dfcac3]/30 transition-colors"
-                            >
-                                <X size={20} className="text-[#4A3129]" />
-                            </button>
+                            <form onSubmit={handleSearchSubmit} className="flex items-center w-full">
+                                <div className="pl-4 pr-2">
+                                    <Search size={24} className="text-[#4A3129]/40 group-focus-within:text-[#4A3129] transition-colors duration-300" />
+                                </div>
+                                <input 
+                                    type="text" 
+                                    placeholder="Search for premium products, collections..." 
+                                    className="w-full bg-transparent border-none outline-none py-4 px-2 text-[16px] md:text-[20px] text-[#4A3129] placeholder:text-[#4A3129]/30 font-satoshi font-medium"
+                                    autoFocus
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                <button 
+                                    type="button"
+                                    onClick={() => setIsSearchOpen(false)} 
+                                    className="mr-2 p-2.5 rounded-full hover:bg-[#dfcac3]/20 hover:text-black text-[#4A3129]/60 transition-all duration-300"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </form>
                         </motion.div>
                     </motion.div>
                 )}

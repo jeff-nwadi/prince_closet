@@ -7,14 +7,14 @@ import Image from 'next/image'
 import { motion } from 'motion/react'
 import { products } from '@/lib/products'
 
-const links = [
-  { title: "All" , category: "all", href: "/shop" },
-  { title: "New Arrival" , category: "new-arrival", href: "/shop?category=new-arrival" },
-  { title: "Tees" , category: "tees", href: "/shop?category=tees" },
-  { title: "Bottoms wears" , category: "bottoms-wears", href: "/shop?category=bottoms-wears" },
-  { title: "Hoodies" , category: "hoodies", href: "/shop?category=hoodies" },  
-  { title: "Headwear" , category: "headwear", href: "/shop?category=headwear" },
-] 
+const categoryLinks = [
+  { title: "All",          category: "all" },
+  { title: "New Arrival",  category: "new-arrival" },
+  { title: "Tees",         category: "tees" },
+  { title: "Bottoms wears",category: "bottoms-wears" },
+  { title: "Hoodies",      category: "hoodies" },  
+  { title: "Headwear",     category: "headwear" },
+]
 
 
 
@@ -43,10 +43,20 @@ const ShopContent = () => {
   // Use null check — null means no ?category param, i.e. "All"
   const categoryParam = searchParams.get('category');
   const currentCategory = categoryParam ?? 'all';
+  const queryParam = searchParams.get('q') ?? '';
 
-  const filteredProducts = currentCategory === 'all'
+  let filteredProducts = currentCategory === 'all'
     ? products
     : products.filter(product => product.category === currentCategory);
+
+  if (queryParam) {
+    const lowercaseQuery = queryParam.toLowerCase();
+    filteredProducts = filteredProducts.filter(product =>
+      product.title.toLowerCase().includes(lowercaseQuery) ||
+      product.description.toLowerCase().includes(lowercaseQuery) ||
+      product.category.toLowerCase().includes(lowercaseQuery)
+    );
+  }
 
   return (
     <div>
@@ -64,17 +74,29 @@ const ShopContent = () => {
             variants={fadeUp}
             className='heading text-[#4A3129] uppercase text-[20px] md:text-[30px] lg:text-[40px]'
           >
-            Shop All
+            {queryParam ? 'Search Results' : 'Shop All'}
           </motion.h2>
           <motion.p
             variants={fadeUp}
             className='text-[16px] font-normal text-[#8a7d72] w-[60%] md:w-[40%] lg:w-[28%]'
           >
-            Browse the full collection. Every sustainable piece we offer, all in one place.
+            {queryParam 
+              ? `Showing premium products matching "${queryParam}".`
+              : 'Browse the full collection. Every sustainable piece we offer, all in one place.'}
           </motion.p>
 
-          <motion.div variants={fadeUp} className='pt-10'>
-            <p className='text-[14px] md:text-[16px] font-normal text-[#4a3129]'>{filteredProducts.length} {filteredProducts.length === 1 ? 'item' : 'items'}</p>
+          <motion.div variants={fadeUp} className='pt-10 flex items-center gap-4'>
+            <p className='text-[14px] md:text-[16px] font-normal text-[#4a3129]'>
+              {filteredProducts.length} {filteredProducts.length === 1 ? 'item' : 'items'}
+            </p>
+            {queryParam && (
+              <Link 
+                href={categoryParam ? `/shop?category=${categoryParam}` : '/shop'}
+                className="text-[12px] md:text-[14px] uppercase text-[#4a3129] border-b border-[#4a3129] hover:opacity-60 transition-opacity font-medium"
+              >
+                Clear Search
+              </Link>
+            )}
           </motion.div> 
         </motion.div> 
 
@@ -86,12 +108,16 @@ const ShopContent = () => {
             animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.08, delayChildren: 0.2 } } }}
           >
-            {links.map((link, index) => {
-              // For "All": active when there is NO category param in the URL
-              // For others: active when categoryParam exactly matches
+            {categoryLinks.map((link, index) => {
               const isActive = link.category === 'all'
                 ? categoryParam === null
                 : categoryParam === link.category;
+
+              // Build href, preserving current search query if any
+              const qs = new URLSearchParams();
+              if (link.category !== 'all') qs.set('category', link.category);
+              if (queryParam) qs.set('q', queryParam);
+              const href = `/shop${qs.toString() ? `?${qs.toString()}` : ''}`;
 
               return (
                 <motion.div
@@ -102,7 +128,7 @@ const ShopContent = () => {
                   }}
                 >
                   <Link 
-                    href={link.href} 
+                    href={href} 
                     scroll={false}
                     className={`transition-all duration-300 uppercase font-normal px-4 py-2 border border-[#4A3129] ${
                       isActive 
@@ -118,46 +144,66 @@ const ShopContent = () => {
           </motion.div>
         </div>
 
-        {/* Product grid — key forces re-mount/re-animate on category change */}
+        {/* Product grid or Empty state */}
         <div>
-          <motion.div
-            key={currentCategory}
-            className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-            initial="hidden"
-            animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.4 } } }}
-          >
-            {filteredProducts.map((product, index) => (
-              <motion.div
-                key={product.id}
-                variants={cardVariants}
-                custom={index}
+          {filteredProducts.length > 0 ? (
+            <motion.div
+              key={`${currentCategory}-${queryParam}`}
+              className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.4 } } }}
+            >
+              {filteredProducts.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  variants={cardVariants}
+                  custom={index}
+                >
+                  <Link href={product.link} className='group flex flex-col gap-4 bg-[#e3dbcf] pt-3 pr-3 pl-3 pb-4'>
+                    <div className='w-full h-[400px] bg-gray-200 overflow-hidden relative'>
+                      {/* Primary image */}
+                      <Image 
+                        src={product.image}
+                        alt={product.title}
+                        fill
+                        className='object-cover transition-opacity duration-500 ease-in-out group-hover:opacity-0'
+                      />
+                      {/* Hover image */}
+                      <Image 
+                        src={product.hoverImage}
+                        alt={product.title}
+                        fill
+                        className='object-cover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100'
+                      />
+                    </div>
+                    <div className='flex justify-between w-full gap-2'>
+                      <h3 className='text-lg font-medium'>{product.title}</h3>
+                      <p className='text-sm'>{product.price}</p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center justify-center text-center py-20 px-4 bg-[#e3dbcf]/30 rounded-3xl border border-[#dfcac3]/40"
+            >
+              <h3 className="heading text-[#4A3129] text-[20px] md:text-[24px] uppercase mb-3">No Products Found</h3>
+              <p className="text-[#8a7d72] text-[14px] md:text-[16px] max-w-md mb-8">
+                We couldn't find any premium products matching "{queryParam}". Try checking your spelling or adjusting your keywords.
+              </p>
+              <Link 
+                href="/shop"
+                className="bg-[#4A3129] text-white hover:opacity-90 transition-opacity uppercase text-[14px] md:text-[16px] font-normal px-6 py-3 border border-[#4A3129]"
               >
-                <Link href={product.link} className='group flex flex-col gap-4 bg-[#e3dbcf] pt-3 pr-3 pl-3 pb-4'>
-                  <div className='w-full h-[400px] bg-gray-200 overflow-hidden relative'>
-                    {/* Primary image */}
-                    <Image 
-                      src={product.image}
-                      alt={product.title}
-                      fill
-                      className='object-cover transition-opacity duration-500 ease-in-out group-hover:opacity-0'
-                    />
-                    {/* Hover image */}
-                    <Image 
-                      src={product.hoverImage}
-                      alt={product.title}
-                      fill
-                      className='object-cover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100'
-                    />
-                  </div>
-                  <div className='flex justify-between w-full gap-2'>
-                    <h3 className='text-lg font-medium'>{product.title}</h3>
-                    <p className='text-sm'>{product.price}</p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
+                Browse All Products
+              </Link>
+            </motion.div>
+          )}
         </div>
 
         {/* Load more */}

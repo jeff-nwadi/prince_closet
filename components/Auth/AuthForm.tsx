@@ -3,20 +3,170 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 type Mode = 'login' | 'signup';
 
+interface FormError {
+  field?: 'firstName' | 'lastName' | 'email' | 'password' | 'confirmPassword' | 'terms' | 'general';
+  message: string;
+}
+
 export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode }) {
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>(initialMode);
+
+  // Field state
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+
+  // UI state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<FormError[]>([]);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const isLogin = mode === 'login';
 
   const inputClass =
     'w-full bg-transparent border-b border-[#4a3129]/30 focus:border-[#4A3129] outline-none py-3 text-[14px] text-[#4a3129] placeholder:text-[#4a3129]/40 transition-colors duration-300';
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+
+  function clearState() {
+    setErrors([]);
+    setSuccessMessage('');
+  }
+
+  function getFieldError(field: FormError['field']) {
+    return errors.find((e) => e.field === field)?.message;
+  }
+
+  function getGeneralError() {
+    return errors.find((e) => e.field === 'general')?.message;
+  }
+
+  function switchMode(m: Mode) {
+    setMode(m);
+    clearState();
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setAgreeToTerms(false);
+    setShowPassword(false);
+    setShowConfirm(false);
+  }
+
+  // ── Client-side validation ────────────────────────────────────────────────────
+
+  function validate(): boolean {
+    const errs: FormError[] = [];
+
+    if (!isLogin) {
+      if (!firstName.trim()) errs.push({ field: 'firstName', message: 'First name is required.' });
+      if (!lastName.trim()) errs.push({ field: 'lastName', message: 'Last name is required.' });
+    }
+
+    if (!email.trim()) {
+      errs.push({ field: 'email', message: 'Email address is required.' });
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errs.push({ field: 'email', message: 'Please enter a valid email address.' });
+    }
+
+    if (!password) {
+      errs.push({ field: 'password', message: 'Password is required.' });
+    } else if (!isLogin && password.length < 8) {
+      errs.push({ field: 'password', message: 'Password must be at least 8 characters.' });
+    }
+
+    if (!isLogin) {
+      if (!confirmPassword) {
+        errs.push({ field: 'confirmPassword', message: 'Please confirm your password.' });
+      } else if (password !== confirmPassword) {
+        errs.push({ field: 'confirmPassword', message: 'Passwords do not match.' });
+      }
+      if (!agreeToTerms) {
+        errs.push({ field: 'terms', message: 'You must agree to the Terms of Service.' });
+      }
+    }
+
+    setErrors(errs);
+    return errs.length === 0;
+  }
+
+  // ── Submit handlers ───────────────────────────────────────────────────────────
+
+  async function handleSignUp() {
+    await authClient.signUp.email(
+      {
+        name: `${firstName.trim()} ${lastName.trim()}`,
+        email: email.trim(),
+        password,
+      },
+      {
+        onRequest: () => setIsLoading(true),
+        onSuccess: () => {
+          setIsLoading(false);
+          setSuccessMessage('Account created! Signing you in…');
+          setTimeout(() => router.push('/shop'), 1200);
+        },
+        onError: (ctx) => {
+          setIsLoading(false);
+          const message = ctx.error.message ?? 'Sign up failed. Please try again.';
+          if (message.toLowerCase().includes('email')) {
+            setErrors([{ field: 'email', message }]);
+          } else {
+            setErrors([{ field: 'general', message }]);
+          }
+        },
+      },
+    );
+  }
+
+  async function handleSignIn() {
+    await authClient.signIn.email(
+      {
+        email: email.trim(),
+        password,
+      },
+      {
+        onRequest: () => setIsLoading(true),
+        onSuccess: () => {
+          setIsLoading(false);
+          setSuccessMessage('Signed in! Redirecting…');
+          setTimeout(() => router.push('/shop'), 800);
+        },
+        onError: (ctx) => {
+          setIsLoading(false);
+          const message = ctx.error.message ?? 'Invalid email or password.';
+          setErrors([{ field: 'general', message }]);
+        },
+      },
+    );
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    clearState();
+    if (!validate()) return;
+    if (isLogin) {
+      await handleSignIn();
+    } else {
+      await handleSignUp();
+    }
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen flex bg-[#f4f0ea]">
@@ -65,8 +215,9 @@ export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode
           {(['login', 'signup'] as Mode[]).map((m) => (
             <button
               key={m}
-              onClick={() => setMode(m)}
-              className={`relative pb-3 mr-8 text-[13px] uppercase tracking-widest font-normal transition-colors duration-300 ${
+              onClick={() => switchMode(m)}
+              disabled={isLoading}
+              className={`relative pb-3 mr-8 text-[13px] uppercase tracking-widest font-normal transition-colors duration-300 disabled:opacity-50 ${
                 mode === m ? 'text-[#4A3129]' : 'text-[#4a3129]/40 hover:text-[#4a3129]/70'
               }`}
             >
@@ -111,9 +262,38 @@ export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="flex flex-col gap-7 w-full max-w-sm"
-            onSubmit={(e) => e.preventDefault()}
+            className="flex flex-col gap-6 w-full max-w-sm"
+            onSubmit={handleSubmit}
+            noValidate
           >
+            {/* ── General error banner ── */}
+            <AnimatePresence>
+              {getGeneralError() && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="bg-red-50 border border-red-200 text-red-700 text-[12px] px-4 py-3 leading-relaxed"
+                >
+                  {getGeneralError()}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* ── Success banner ── */}
+            <AnimatePresence>
+              {successMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="bg-green-50 border border-green-200 text-green-700 text-[12px] px-4 py-3 leading-relaxed"
+                >
+                  {successMessage}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Name fields — signup only */}
             {!isLogin && (
               <div className="flex gap-5">
@@ -122,88 +302,134 @@ export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode
                     First Name
                   </label>
                   <input
+                    id="firstName"
                     type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Prince"
                     autoComplete="given-name"
                     className={inputClass}
+                    disabled={isLoading}
                   />
+                  {getFieldError('firstName') && (
+                    <p className="text-red-500 text-[11px] mt-1">{getFieldError('firstName')}</p>
+                  )}
                 </div>
                 <div className="flex-1">
                   <label className="text-[11px] uppercase tracking-widest text-[#4a3129]/50 block mb-1">
                     Last Name
                   </label>
                   <input
+                    id="lastName"
                     type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     placeholder="Doe"
                     autoComplete="family-name"
                     className={inputClass}
+                    disabled={isLoading}
                   />
+                  {getFieldError('lastName') && (
+                    <p className="text-red-500 text-[11px] mt-1">{getFieldError('lastName')}</p>
+                  )}
                 </div>
               </div>
             )}
 
             {/* Email */}
             <div>
-              <label className="text-[11px] uppercase tracking-widest text-[#4a3129]/50 block mb-1">
+              <label
+                htmlFor="email"
+                className="text-[11px] uppercase tracking-widest text-[#4a3129]/50 block mb-1"
+              >
                 Email Address
               </label>
               <input
+                id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 autoComplete="email"
                 className={inputClass}
+                disabled={isLoading}
               />
+              {getFieldError('email') && (
+                <p className="text-red-500 text-[11px] mt-1">{getFieldError('email')}</p>
+              )}
             </div>
 
             {/* Password */}
             <div>
-              <label className="text-[11px] uppercase tracking-widest text-[#4a3129]/50 block mb-1">
+              <label
+                htmlFor="password"
+                className="text-[11px] uppercase tracking-widest text-[#4a3129]/50 block mb-1"
+              >
                 Password
               </label>
               <div className="relative">
                 <input
+                  id="password"
                   type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   autoComplete={isLogin ? 'current-password' : 'new-password'}
                   className={`${inputClass} pr-10`}
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((p) => !p)}
                   className="absolute right-0 bottom-3 text-[#4a3129]/40 hover:text-[#4a3129] transition-colors"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+              {getFieldError('password') && (
+                <p className="text-red-500 text-[11px] mt-1">{getFieldError('password')}</p>
+              )}
             </div>
 
             {/* Confirm Password — signup only */}
             {!isLogin && (
               <div>
-                <label className="text-[11px] uppercase tracking-widest text-[#4a3129]/50 block mb-1">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-[11px] uppercase tracking-widest text-[#4a3129]/50 block mb-1"
+                >
                   Confirm Password
                 </label>
                 <div className="relative">
                   <input
+                    id="confirmPassword"
                     type={showConfirm ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     autoComplete="new-password"
                     className={`${inputClass} pr-10`}
+                    disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirm((p) => !p)}
                     className="absolute right-0 bottom-3 text-[#4a3129]/40 hover:text-[#4a3129] transition-colors"
+                    aria-label={showConfirm ? 'Hide confirm password' : 'Show confirm password'}
                   >
                     {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
+                {getFieldError('confirmPassword') && (
+                  <p className="text-red-500 text-[11px] mt-1">{getFieldError('confirmPassword')}</p>
+                )}
               </div>
             )}
 
             {/* Forgot password — login only */}
             {isLogin && (
-              <div className="flex justify-end -mt-3">
+              <div className="flex justify-end -mt-2">
                 <button
                   type="button"
                   className="text-[11px] uppercase tracking-widest text-[#4a3129]/45 hover:text-[#4a3129] transition-colors duration-200"
@@ -215,33 +441,57 @@ export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode
 
             {/* Terms checkbox — signup only */}
             {!isLogin && (
-              <label className="flex items-start gap-3 cursor-pointer group">
-                <div className="relative mt-0.5 shrink-0">
-                  <input type="checkbox" className="sr-only peer" />
-                  <div className="w-4 h-4 border border-[#4a3129]/40 peer-checked:bg-[#4A3129] peer-checked:border-[#4A3129] transition-all duration-200" />
-                  <svg
-                    className="absolute inset-0 w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
-                    fill="none" viewBox="0 0 16 16"
-                  >
-                    <path d="M3 8l3.5 3.5L13 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <span className="text-[12px] text-[#4a3129]/55 leading-relaxed">
-                  I agree to the{' '}
-                  <span className="text-[#4a3129] underline underline-offset-2 cursor-pointer">Terms of Service</span>
-                  {' '}and{' '}
-                  <span className="text-[#4a3129] underline underline-offset-2 cursor-pointer">Privacy Policy</span>
-                </span>
-              </label>
+              <div>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <div className="relative mt-0.5 shrink-0">
+                    <input
+                      id="terms"
+                      type="checkbox"
+                      checked={agreeToTerms}
+                      onChange={(e) => setAgreeToTerms(e.target.checked)}
+                      className="sr-only peer"
+                      disabled={isLoading}
+                    />
+                    <div className="w-4 h-4 border border-[#4a3129]/40 peer-checked:bg-[#4A3129] peer-checked:border-[#4A3129] transition-all duration-200" />
+                    <svg
+                      className="absolute inset-0 w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
+                      fill="none"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M3 8l3.5 3.5L13 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <span className="text-[12px] text-[#4a3129]/55 leading-relaxed">
+                    I agree to the{' '}
+                    <span className="text-[#4a3129] underline underline-offset-2 cursor-pointer">Terms of Service</span>
+                    {' '}and{' '}
+                    <span className="text-[#4a3129] underline underline-offset-2 cursor-pointer">Privacy Policy</span>
+                  </span>
+                </label>
+                {getFieldError('terms') && (
+                  <p className="text-red-500 text-[11px] mt-1">{getFieldError('terms')}</p>
+                )}
+              </div>
             )}
 
             {/* Submit */}
             <button
+              id="auth-submit-btn"
               type="submit"
-              className="group w-full bg-[#4A3129] text-white uppercase text-[12px] font-normal py-4 tracking-widest hover:bg-[#3a2520] transition-all duration-300 flex items-center justify-center gap-3 mt-2"
+              disabled={isLoading}
+              className="group w-full bg-[#4A3129] text-white uppercase text-[12px] font-normal py-4 tracking-widest hover:bg-[#3a2520] transition-all duration-300 flex items-center justify-center gap-3 mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLogin ? 'Sign In' : 'Create Account'}
-              <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+              {isLoading ? (
+                <>
+                  <Loader2 size={15} className="animate-spin" />
+                  {isLogin ? 'Signing In…' : 'Creating Account…'}
+                </>
+              ) : (
+                <>
+                  {isLogin ? 'Sign In' : 'Create Account'}
+                  <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+                </>
+              )}
             </button>
 
             {/* Divider */}
@@ -253,14 +503,16 @@ export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode
 
             {/* Google SSO */}
             <button
+              id="google-sso-btn"
               type="button"
-              className="w-full border border-[#4a3129]/25 text-[#4a3129] uppercase text-[12px] font-normal py-4 tracking-widest hover:border-[#4a3129] hover:bg-[#e3dbcf] transition-all duration-300 flex items-center justify-center gap-3"
+              disabled={isLoading}
+              className="w-full border border-[#4a3129]/25 text-[#4a3129] uppercase text-[12px] font-normal py-4 tracking-widest hover:border-[#4a3129] hover:bg-[#e3dbcf] transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg viewBox="0 0 24 24" className="w-4 h-4" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
               Continue with Google
             </button>
@@ -270,8 +522,9 @@ export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode
               {isLogin ? "Don't have an account? " : 'Already have an account? '}
               <button
                 type="button"
-                onClick={() => setMode(isLogin ? 'signup' : 'login')}
-                className="text-[#4a3129] underline underline-offset-2 hover:opacity-70 transition-opacity"
+                onClick={() => switchMode(isLogin ? 'signup' : 'login')}
+                disabled={isLoading}
+                className="text-[#4a3129] underline underline-offset-2 hover:opacity-70 transition-opacity disabled:opacity-50"
               >
                 {isLogin ? 'Create one' : 'Sign in'}
               </button>

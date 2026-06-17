@@ -91,9 +91,12 @@ export default function Header() {
                         <div className="relative" ref={userMenuRef}>
                             <button 
                                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} 
-                                className="flex items-center justify-center hover:opacity-60 transition-opacity"
+                                className="flex items-center gap-1.5 hover:opacity-60 transition-opacity"
                             >
-                                <User size={20} strokeWidth={1.5} className={isUserMenuOpen ? 'text-black' : 'text-[#4D3D30]'} />
+                                <span className={`text-[14px] sm:text-[15px] font-medium ${isUserMenuOpen ? 'text-black' : 'text-[#4D3D30]'}`}>
+                                    Hi, {session.user.name?.split(' ')[0] || 'User'}.
+                                </span>
+                                <ChevronDown size={16} strokeWidth={1.5} className={`transition-transform duration-200 ${isUserMenuOpen ? 'text-black rotate-180' : 'text-[#4D3D30]'}`} />
                             </button>
                             
                             <AnimatePresence>

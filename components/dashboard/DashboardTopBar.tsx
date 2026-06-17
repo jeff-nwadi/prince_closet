@@ -2,10 +2,18 @@
 
 import { customer } from './DashboardData';
 
-export default function DashboardTopBar() {
+export default function DashboardTopBar({ user }: { user?: any }) {
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+  const name = user?.name || customer.name;
+  const initials = name
+    .split(' ')
+    .map((n: string) => n[0])
+    .join('')
+    .substring(0, 2)
+    .toUpperCase();
 
   return (
     <header className="flex items-center justify-between gap-4 mb-6">
@@ -16,7 +24,7 @@ export default function DashboardTopBar() {
           aria-hidden="true"
         >
           <span className="text-white text-sm font-medium tracking-wide select-none">
-            {customer.initials}
+            {initials}
           </span>
         </div>
 
@@ -24,12 +32,12 @@ export default function DashboardTopBar() {
           <p className="text-[15px] font-medium text-gray-900 leading-tight truncate">
             {greeting},{' '}
             <span className="text-[#534AB7]">
-              {customer.name.split(' ')[0]}
+              {name.split(' ')[0]}
             </span>{' '}
             👋
           </p>
           <p className="text-xs text-gray-400 mt-0.5 leading-tight">
-            {customer.location} · Member since {customer.memberSince}
+            {customer.location} · Member since {new Date(user?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
           </p>
         </div>
       </div>

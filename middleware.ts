@@ -9,16 +9,22 @@ export function middleware(request: NextRequest) {
     request.cookies.get("__Secure-better-auth.session_token")?.value;
 
   const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/signup");
+  const isDashboardPage = pathname.startsWith("/dashboard");
 
   // If the user has a session cookie and is attempting to access login/signup, redirect to shop
   if (sessionToken && isAuthPage) {
     return NextResponse.redirect(new URL("/shop", request.url));
   }
 
+  // If the user does NOT have a session and is trying to access dashboard, redirect to login
+  if (!sessionToken && isDashboardPage) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
   return NextResponse.next();
 }
 
-// Apply middleware to auth pages
+// Apply middleware to auth and dashboard pages
 export const config = {
-  matcher: ["/login", "/signup"],
+  matcher: ["/login", "/signup", "/dashboard/:path*"],
 };

@@ -47,3 +47,37 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("createdAt"),
   updatedAt: timestamp("updatedAt"),
 });
+
+export const orders = pgTable("orders", {
+  id: text("id").primaryKey(),
+  userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+  orderNumber: text("orderNumber").notNull().unique(),
+  status: text("status").notNull(), // 'delivered', 'in-transit', 'returned', 'processing'
+  totalAmount: text("totalAmount").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const orderItems = pgTable("order_items", {
+  id: text("id").primaryKey(),
+  orderId: text("orderId").notNull().references(() => orders.id, { onDelete: "cascade" }),
+  productId: text("productId").notNull(), 
+  productName: text("productName").notNull(),
+  price: text("price").notNull(),
+  quantity: text("quantity").notNull(),
+});
+
+export const wishlist = pgTable("wishlist", {
+  id: text("id").primaryKey(),
+  userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+  productId: text("productId").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const shipments = pgTable("shipments", {
+  id: text("id").primaryKey(),
+  orderId: text("orderId").notNull().references(() => orders.id, { onDelete: "cascade" }),
+  status: text("status").notNull(),
+  estimatedArrival: timestamp("estimatedArrival"),
+  stepsJson: text("stepsJson"), // Store JSON string of steps
+});

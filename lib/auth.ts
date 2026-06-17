@@ -12,4 +12,8 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
   },
+  session: {
+    expiresIn: 60 * 60 * 24, // 24 hours
+    updateAge: 60 * 60 * 1, // 1 hour (update session expiration if older than 1 hour)
+  },
 });

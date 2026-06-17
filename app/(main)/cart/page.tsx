@@ -175,9 +175,12 @@ export default function CartPage() {
                 Shipping & taxes calculated at checkout.
               </p>
 
-              <button className="w-full bg-[#4A3129] text-white uppercase text-sm font-normal py-4 tracking-widest hover:bg-[#4a3129]/80 transition-all duration-300">
+              <Link
+                href="/checkout"
+                className="w-full text-center block bg-[#4A3129] text-white uppercase text-sm font-normal py-4 tracking-widest hover:bg-[#4a3129]/80 transition-all duration-300"
+              >
                 Proceed to Checkout
-              </button>
+              </Link>
 
               <Link
                 href="/shop"

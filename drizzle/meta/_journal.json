@@ -15,6 +15,13 @@
       "when": 1781442458839,
       "tag": "0001_dry_moondragon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781733999283,
+      "tag": "0002_naive_arachne",
+      "breakpoints": true
     }
   ]
 }

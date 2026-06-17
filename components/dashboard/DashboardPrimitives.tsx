@@ -36,6 +36,9 @@ const statusConfig: Record<OrderStatus, { label: string; variant: BadgeVariant }
   delivered:  { label: 'Delivered',  variant: 'green'  },
   'in-transit': { label: 'In Transit', variant: 'amber'  },
   returned:   { label: 'Returned',   variant: 'gray'   },
+  processing: { label: 'Processing', variant: 'purple' },
+  pending:    { label: 'Pending Payment', variant: 'amber' },
+  failed:     { label: 'Failed',     variant: 'red'    },
 };
 
 export function StatusBadge({ status }: { status: OrderStatus }) {

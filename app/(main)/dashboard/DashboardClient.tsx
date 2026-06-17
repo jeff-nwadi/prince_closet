@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import DashboardTopBar from '@/components/dashboard/DashboardTopBar';
 import DashboardStatsRow from '@/components/dashboard/DashboardStatsRow';
 import DashboardRecentOrders from '@/components/dashboard/DashboardRecentOrders';
@@ -8,7 +8,7 @@ import DashboardShipmentTracker from '@/components/dashboard/DashboardShipmentTr
 import DashboardWishlistPreview from '@/components/dashboard/DashboardWishlistPreview';
 import DashboardBottomNav from '@/components/dashboard/DashboardBottomNav';
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0, y: 15 },
   visible: {
     opacity: 1,
@@ -21,7 +21,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,

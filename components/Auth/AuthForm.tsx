@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import { Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
@@ -17,6 +17,8 @@ interface FormError {
 
 export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/shop';
   const [mode, setMode] = useState<Mode>(initialMode);
 
   // Field state
@@ -118,7 +120,7 @@ export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode
         onSuccess: () => {
           setIsLoading(false);
           setSuccessMessage('Account created! Signing you in…');
-          setTimeout(() => router.push('/shop'), 1200);
+          setTimeout(() => router.push(callbackUrl), 1200);
         },
         onError: (ctx) => {
           setIsLoading(false);
@@ -144,7 +146,7 @@ export default function AuthForm({ initialMode = 'login' }: { initialMode?: Mode
         onSuccess: () => {
           setIsLoading(false);
           setSuccessMessage('Signed in! Redirecting…');
-          setTimeout(() => router.push('/shop'), 800);
+          setTimeout(() => router.push(callbackUrl), 800);
         },
         onError: (ctx) => {
           setIsLoading(false);

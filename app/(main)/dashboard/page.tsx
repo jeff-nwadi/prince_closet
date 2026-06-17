@@ -41,17 +41,40 @@ export default async function DashboardPage() {
   }
 
   const mappedOrders = userOrders.map(order => {
-    const item = userOrderItems.find(i => i.orderId === order.id);
-    const productDef = item ? products.find(p => p.id.toString() === item.productId) : null;
+    const itemsInOrder = userOrderItems.filter(i => i.orderId === order.id);
+    const mappedItems = itemsInOrder.map(item => {
+      const productDef = products.find(p => p.id.toString() === item.productId);
+      return {
+        id: item.id,
+        productId: item.productId,
+        productName: item.productName,
+        price: item.price,
+        quantity: item.quantity,
+        size: item.size || 'M',
+        thumbnail: productDef ? productDef.image : 'bg-gray-100',
+      };
+    });
+
+    const primaryItem = mappedItems[0] || null;
     
     return {
       id: order.id,
-      product: productDef ? productDef.title : (item ? item.productName : 'Unknown Product'),
+      product: primaryItem ? primaryItem.productName : 'Unknown Product',
       orderNumber: order.orderNumber,
       date: new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(order.createdAt)),
       price: order.totalAmount,
       status: order.status as any,
-      thumbnail: productDef ? productDef.image : 'bg-gray-100',
+      thumbnail: primaryItem ? primaryItem.thumbnail : 'bg-gray-100',
+      shippingName: order.shippingName || '',
+      shippingAddress1: order.shippingAddress1 || '',
+      shippingAddress2: order.shippingAddress2 || '',
+      shippingCity: order.shippingCity || '',
+      shippingState: order.shippingState || '',
+      shippingPostalCode: order.shippingPostalCode || '',
+      shippingCountry: order.shippingCountry || '',
+      shippingPhone: order.shippingPhone || '',
+      shippingMethod: order.shippingMethod || '',
+      items: mappedItems,
     }
   });
 
@@ -65,10 +88,13 @@ export default async function DashboardPage() {
     const productDef = products.find(p => p.id.toString() === w.productId);
     return {
       id: w.id,
+      productId: w.productId,
       product: productDef ? productDef.title : 'Unknown Product',
       price: productDef ? productDef.price : '€0',
       onSale: false,
       thumbnail: productDef ? productDef.image : 'bg-gray-200',
+      sizes: productDef ? productDef.sizes : [],
+      link: productDef ? productDef.link : '/shop',
     }
   });
 

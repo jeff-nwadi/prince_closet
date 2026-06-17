@@ -54,6 +54,17 @@ export const orders = pgTable("orders", {
   orderNumber: text("orderNumber").notNull().unique(),
   status: text("status").notNull(), // 'delivered', 'in-transit', 'returned', 'processing'
   totalAmount: text("totalAmount").notNull(),
+  shippingName: text("shippingName"),
+  shippingAddress1: text("shippingAddress1"),
+  shippingAddress2: text("shippingAddress2"),
+  shippingCity: text("shippingCity"),
+  shippingState: text("shippingState"),
+  shippingPostalCode: text("shippingPostalCode"),
+  shippingCountry: text("shippingCountry"),
+  shippingPhone: text("shippingPhone"),
+  shippingMethod: text("shippingMethod"),
+  paymentStatus: text("paymentStatus").default("pending").notNull(), // 'pending', 'paid', 'failed'
+  paymentReference: text("paymentReference"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -65,6 +76,7 @@ export const orderItems = pgTable("order_items", {
   productName: text("productName").notNull(),
   price: text("price").notNull(),
   quantity: text("quantity").notNull(),
+  size: text("size"),
 });
 
 export const wishlist = pgTable("wishlist", {

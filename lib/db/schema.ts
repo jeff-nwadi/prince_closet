@@ -93,3 +93,27 @@ export const shipments = pgTable("shipments", {
   estimatedArrival: timestamp("estimatedArrival"),
   stepsJson: text("stepsJson"), // Store JSON string of steps
 });
+
+export const notifications = pgTable("notifications", {
+  id: text("id").primaryKey(),
+  userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // 'order_update', 'promo', 'system'
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  isRead: boolean("isRead").notNull().default(false),
+  link: text("link"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const userSettings = pgTable("user_settings", {
+  id: text("id").primaryKey(),
+  userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }).unique(),
+  notifyOrders: boolean("notifyOrders").notNull().default(true),
+  notifyPromos: boolean("notifyPromos").notNull().default(true),
+  notifyNewsletter: boolean("notifyNewsletter").notNull().default(false),
+  displayName: text("displayName"),
+  phone: text("phone"),
+  currency: text("currency").notNull().default("NGN"),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+

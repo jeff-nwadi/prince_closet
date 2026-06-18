@@ -35,11 +35,12 @@ export default function Header() {
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
+            const scrolled = window.scrollY > 20;
+            setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
         };
         // Run once on mount in case the page is already scrolled
         handleScroll();
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 

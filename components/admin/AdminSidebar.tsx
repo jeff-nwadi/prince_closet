@@ -1,0 +1,120 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { 
+  LayoutDashboard, 
+  ShoppingBag, 
+  Package, 
+  Users, 
+  Archive, 
+  Tag, 
+  Truck, 
+  Undo2, 
+  BarChart3, 
+  FileText, 
+  Settings,
+  Shirt
+} from 'lucide-react';
+
+const navSections = [
+  {
+    title: 'Main',
+    items: [
+      { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+      { name: 'Orders', href: '/admin/orders', icon: ShoppingBag, badge: '12' },
+      { name: 'Products', href: '/admin/products', icon: Package },
+      { name: 'Customers', href: '/admin/customers', icon: Users },
+    ],
+  },
+  {
+    title: 'Store',
+    items: [
+      { name: 'Inventory', href: '/admin/inventory', icon: Archive, badge: '3', badgeColor: 'bg-red-500' },
+      { name: 'Discounts', href: '/admin/discounts', icon: Tag },
+      { name: 'Shipping', href: '/admin/shipping', icon: Truck },
+      { name: 'Returns', href: '/admin/returns', icon: Undo2 },
+    ],
+  },
+  {
+    title: 'Insights',
+    items: [
+      { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
+      { name: 'Reports', href: '/admin/reports', icon: FileText },
+    ],
+  },
+  {
+    title: 'Settings',
+    items: [
+      { name: 'Settings', href: '/admin/settings', icon: Settings },
+    ],
+  },
+];
+
+export default function AdminSidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="w-[200px] bg-[#4a3129] h-screen fixed left-0 top-0 flex flex-col border-r border-[#dfcac3]/20 z-50">
+      {/* Logo Area */}
+      <div className="h-16 flex items-center px-6 border-b border-[#dfcac3]/10 flex-shrink-0">
+        <Link href="/admin" className="flex items-center gap-2 text-[#f4f0ea]">
+          <Shirt size={20} strokeWidth={2} />
+          <span className="font-bold tracking-widest uppercase text-sm">StyleAdmin</span>
+        </Link>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-8 no-scrollbar">
+        {navSections.map((section) => (
+          <div key={section.title}>
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#dfcac3]/60 mb-3 px-2">
+              {section.title}
+            </h3>
+            <div className="flex flex-col gap-1">
+              {section.items.map((item) => {
+                const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
+                const Icon = item.icon;
+
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center justify-between px-2 py-2 rounded-none transition-colors ${
+                      isActive
+                        ? 'bg-[#3A241C] text-white border-l-2 border-[#dfcac3]'
+                        : 'text-[#dfcac3] hover:bg-[#3A241C]/50 hover:text-white border-l-2 border-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon size={16} strokeWidth={isActive ? 2.5 : 2} />
+                      <span className={`text-xs ${isActive ? 'font-bold' : 'font-medium'}`}>
+                        {item.name}
+                      </span>
+                    </div>
+                    {item.badge && (
+                      <span
+                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white ${
+                          item.badgeColor || 'bg-[#dfcac3]/30 text-white'
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {/* Footer Area (Optional) */}
+      <div className="p-4 border-t border-[#dfcac3]/10">
+        <div className="text-[10px] text-[#dfcac3]/50 uppercase tracking-widest text-center">
+          Prince's Closet
+        </div>
+      </div>
+    </aside>
+  );
+}

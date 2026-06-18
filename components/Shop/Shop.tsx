@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'motion/react'
 import { products } from '@/lib/products'
@@ -57,6 +57,14 @@ const ShopContent = () => {
       product.category.toLowerCase().includes(lowercaseQuery)
     );
   }
+
+  const [visibleCount, setVisibleCount] = useState(6);
+
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [currentCategory, queryParam]);
+
+  const displayedProducts = filteredProducts.slice(0, visibleCount);
 
   return (
     <div>
@@ -154,7 +162,7 @@ const ShopContent = () => {
               animate="visible"
               variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.4 } } }}
             >
-              {filteredProducts.map((product, index) => (
+              {displayedProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
                   variants={cardVariants}
@@ -207,20 +215,21 @@ const ShopContent = () => {
         </div>
 
         {/* Load more */}
-        <motion.div
-          className='text-center py-10'
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          <Link
-            href="/shop"
-            scroll={false}
-            className="bg-[#e3dbcf] text-[#4a3129] border transition-all duration-300 hover:bg-[#4a3129] hover:text-white border-[#4A3129] uppercase text-[16px] font-normal px-4 py-2"
+        {visibleCount < filteredProducts.length && (
+          <motion.div
+            className='text-center py-10'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            Load More
-          </Link>
-        </motion.div>
+            <button
+              onClick={() => setVisibleCount(prev => prev + 6)}
+              className="bg-[#e3dbcf] text-[#4a3129] border transition-all duration-300 hover:bg-[#4a3129] hover:text-white border-[#4A3129] uppercase text-[16px] font-normal px-4 py-2 cursor-pointer"
+            >
+              Load More
+            </button>
+          </motion.div>
+        )}
 
       </section>
     </div> 

@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { products } from '@/lib/products'
+import { getDbProductById, getDbProducts } from '@/lib/db/helper'
 import ProductGallery from '@/components/Shop/ProductGallery'
 import AddToCart from '@/components/Shop/AddToCart'
 
-export function generateStaticParams() {
-  return products.map((p) => ({ id: String(p.id) }))
+export const dynamic = 'force-dynamic'
+
+export async function generateStaticParams() {
+  const list = await getDbProducts()
+  return list.map((p) => ({ id: p.id }))
 }
 
 export default async function Page({
@@ -15,11 +18,15 @@ export default async function Page({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const product = products.find((p) => p.id === Number(id))
+  const product = await getDbProductById(id)
 
   if (!product) notFound()
 
-  const images = [product.image, product.image2]
+  const images = [product.image, product.image2 || product.hoverImage]
+  const allProducts = await getDbProducts()
+  const recommendations = allProducts
+    .filter((p) => p.id !== product.id && p.status === 'Active')
+    .slice(0, 3)
 
   return (
     <div className='min-h-screen bg-[#f4f0ea] pt-28 pb-20 px-6 sm:px-12 md:px-16'>
@@ -91,10 +98,7 @@ export default async function Page({
         </div>
 
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 '>
-          {products
-            .filter((p) => p.id !== product.id)
-            .slice(0, 3)
-            .map((p) => (
+          {recommendations.map((p) => (
               <Link href={p.link} key={p.id} className='group flex flex-col gap-3 bg-[#e3dbcf] p-3'>
                 <div className='relative w-full h-[320px] overflow-hidden'>
                   <Image

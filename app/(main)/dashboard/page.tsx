@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db/db';
 import { orders, orderItems, wishlist, shipments } from '@/lib/db/schema';
 import { eq, desc, inArray, and } from 'drizzle-orm';
-import { products } from '@/lib/products';
+import { getDbProducts } from '@/lib/db/helper';
 
 export const metadata: Metadata = {
   title: 'Customer Dashboard | Prince Closet',
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
+  const products = await getDbProducts();
   const session = await auth.api.getSession({
     headers: await headers()
   });

@@ -16,7 +16,7 @@ export default function DashboardWishlistPreview({ wishlistItems: initialItems }
     // Add to cart with first size option or standard "M"
     const size = item.sizes && item.sizes.length > 0 ? item.sizes[0] : 'M';
     addToCart({
-      id: Number(item.productId),
+      id: item.productId,
       title: item.product,
       price: item.price,
       image: item.thumbnail,

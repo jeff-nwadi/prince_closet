@@ -5,12 +5,9 @@ const sql = neon(connectionString);
 
 async function run() {
   try {
-    const orders = await sql`select * from orders`;
-    console.log("All orders:");
-    console.log(orders);
-    
-    const sumResult = await sql`select sum(cast("totalAmount" as numeric)) from "orders" where "orders"."paymentStatus" = 'paid'`;
-    console.log("Sum result:", sumResult);
+    const products = await sql`select * from products`;
+    console.log("All products in database:");
+    console.log(products);
   } catch (err) {
     console.error("Error executing query:", err);
   }

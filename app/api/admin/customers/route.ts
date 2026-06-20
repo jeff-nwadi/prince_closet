@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db/db';
 import { user, orders } from '@/lib/db/schema';
-import { desc, count, eq, sum } from 'drizzle-orm';
+import { desc, count, eq, sum, sql } from 'drizzle-orm';
 
 function isAdmin(email: string) {
   const adminEmails = (process.env.ADMIN_EMAILS ?? '')
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
       .select({
         userId: orders.userId,
         orderCount: count(),
-        totalSpent: sum(orders.totalAmount),
+        totalSpent: sql<string>`sum(cast(${orders.totalAmount} as numeric))`,
       })
       .from(orders)
       .where(eq(orders.paymentStatus, 'paid'))

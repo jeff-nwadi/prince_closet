@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'motion/react'
-import { products } from '@/lib/products'
 
 const categoryLinks = [
   { title: "All",          category: "all" },
@@ -15,8 +14,6 @@ const categoryLinks = [
   { title: "Hoodies",      category: "hoodies" },  
   { title: "Headwear",     category: "headwear" },
 ]
-
-
 
 // Animation variants
 const fadeUp = {
@@ -38,6 +35,16 @@ const cardVariants = {
   }),
 }
 
+const SkeletonCard = () => (
+  <div className="flex flex-col gap-4 bg-[#e3dbcf]/50 p-3 animate-pulse">
+    <div className="w-full h-[400px] bg-[#dfcac3]/40 relative" />
+    <div className="flex justify-between w-full gap-2 pt-2">
+      <div className="h-5 bg-[#dfcac3]/60 w-[60%]" />
+      <div className="h-5 bg-[#dfcac3]/60 w-[20%]" />
+    </div>
+  </div>
+);
+
 const ShopContent = () => {
   const searchParams = useSearchParams();
   // Use null check — null means no ?category param, i.e. "All"
@@ -45,26 +52,36 @@ const ShopContent = () => {
   const currentCategory = categoryParam ?? 'all';
   const queryParam = searchParams.get('q') ?? '';
 
-  let filteredProducts = currentCategory === 'all'
-    ? products
-    : products.filter(product => product.category === currentCategory);
-
-  if (queryParam) {
-    const lowercaseQuery = queryParam.toLowerCase();
-    filteredProducts = filteredProducts.filter(product =>
-      product.title.toLowerCase().includes(lowercaseQuery) ||
-      product.description.toLowerCase().includes(lowercaseQuery) ||
-      product.category.toLowerCase().includes(lowercaseQuery)
-    );
-  }
-
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(6);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (categoryParam) params.set('category', categoryParam);
+        if (queryParam) params.set('q', queryParam);
+        const res = await fetch(`/api/products?${params}`);
+        if (res.ok) {
+          const data = await res.json();
+          setProducts(data.products ?? []);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [categoryParam, queryParam]);
 
   useEffect(() => {
     setVisibleCount(6);
   }, [currentCategory, queryParam]);
 
-  const displayedProducts = filteredProducts.slice(0, visibleCount);
+  const displayedProducts = products.slice(0, visibleCount);
 
   return (
     <div>
@@ -95,7 +112,7 @@ const ShopContent = () => {
 
           <motion.div variants={fadeUp} className='pt-10 flex items-center gap-4'>
             <p className='text-[14px] md:text-[16px] font-normal text-[#4a3129]'>
-              {filteredProducts.length} {filteredProducts.length === 1 ? 'item' : 'items'}
+              {products.length} {products.length === 1 ? 'item' : 'items'}
             </p>
             {queryParam && (
               <Link 
@@ -154,7 +171,13 @@ const ShopContent = () => {
 
         {/* Product grid or Empty state */}
         <div>
-          {filteredProducts.length > 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          ) : products.length > 0 ? (
             <motion.div
               key={`${currentCategory}-${queryParam}`}
               className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
@@ -215,7 +238,7 @@ const ShopContent = () => {
         </div>
 
         {/* Load more */}
-        {visibleCount < filteredProducts.length && (
+        {!loading && visibleCount < products.length && (
           <motion.div
             className='text-center py-10'
             initial={{ opacity: 0, y: 20 }}

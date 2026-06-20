@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, numeric } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -48,12 +48,12 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updatedAt"),
 });
 
-export const orders = pgTable("orders", {
+export const orders = pgTable("orders", { 
   id: text("id").primaryKey(),
   userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
   orderNumber: text("orderNumber").notNull().unique(),
   status: text("status").notNull(), // 'delivered', 'in-transit', 'returned', 'processing'
-  totalAmount: text("totalAmount").notNull(),
+  totalAmount: numeric("totalAmount").notNull(),
   shippingName: text("shippingName"),
   shippingAddress1: text("shippingAddress1"),
   shippingAddress2: text("shippingAddress2"),

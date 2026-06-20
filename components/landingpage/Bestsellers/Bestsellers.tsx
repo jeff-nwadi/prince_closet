@@ -1,10 +1,9 @@
 'use client'
 import { motion } from 'framer-motion'
 import { useInView } from '@/hooks/useInView'
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { products } from '@/lib/products'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -21,10 +20,23 @@ const fadeUp = {
   }),
 }
 
-// We select the first 3 products from products.ts as our Bestsellers
-const bestsellerProducts = products.slice(0, 3)
+interface Product {
+  id: string | number;
+  title: string;
+  price: string;
+  image: string;
+  hoverImage?: string;
+}
 
-type Product = typeof products[0]
+const SkeletonCard = () => (
+  <div className="flex flex-col items-center bg-[#e3dbcf]/50 p-3 h-[495px] w-full animate-pulse">
+    <div className="w-full h-[420px] bg-[#dfcac3]/40" />
+    <div className="flex justify-between w-full pt-5">
+      <div className="h-5 bg-[#dfcac3]/60 w-[60%]" />
+      <div className="h-5 bg-[#dfcac3]/60 w-[20%]" />
+    </div>
+  </div>
+);
 
 const ProductCard = ({ product, index, isInView }: { product: Product; index: number; isInView: boolean }) => {
   const [hovered, setHovered] = useState(false)
@@ -76,6 +88,27 @@ const ProductCard = ({ product, index, isInView }: { product: Product; index: nu
 const Bestsellers = () => {
   const ref = useRef<HTMLDivElement>(null)
   const { isInView } = useInView(ref, { margin: '-80px' })
+  const [bestsellers, setBestsellers] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBestsellers = async () => {
+      try {
+        const res = await fetch('/api/products');
+        if (res.ok) {
+          const data = await res.json();
+          // Take the first 3 products as bestsellers
+          setBestsellers((data.products ?? []).slice(0, 3));
+        }
+      } catch (err) {
+        console.error("Error fetching bestsellers:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBestsellers();
+  }, []);
+
   return (
     <div ref={ref} id="bestsellers" data-scroll-section className='py-20 lg:py-32 px-3 lg:px-16 bg-[#f4f0ea]'>
         {/* Title block with entrance animation */}
@@ -101,7 +134,11 @@ const Bestsellers = () => {
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-        {bestsellerProducts.map((product, index) => (
+        {loading ? (
+          [...Array(3)].map((_, i) => (
+            <SkeletonCard key={i} />
+          ))
+        ) : bestsellers.map((product, index) => (
           <ProductCard key={product.id} product={product} index={index} isInView={isInView} />
         ))}
       </div>

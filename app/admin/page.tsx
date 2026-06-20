@@ -18,7 +18,9 @@ function isAdmin(email: string) {
 async function getDashboardData() {
   const [revenueResult, ordersCount, pendingCount, customersCount, recentOrders, itemCounts, lowStockItems, pendingReturns] =
     await Promise.all([
-      db.select({ total: sum(orders.totalAmount) }).from(orders).where(eq(orders.paymentStatus, 'paid')),
+      db.select({ total: sql<string>`coalesce(sum(${orders.totalAmount}), 0)` })
+        .from(orders)
+        .where(eq(orders.paymentStatus, 'paid')),
       db.select({ count: count() }).from(orders),
       db.select({ count: count() }).from(orders).where(eq(orders.status, 'processing')),
       db.select({ count: count() }).from(user),

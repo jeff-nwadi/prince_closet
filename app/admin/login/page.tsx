@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shirt, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
@@ -12,6 +12,19 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [debugData, setDebugData] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/admin/setup')
+      .then((res) => res.json())
+      .then((data) => console.log('[Admin Setup]:', data))
+      .catch((err) => console.error('[Admin Setup Error]:', err));
+
+    fetch('/api/admin/dashboard')
+      .then((res) => res.json())
+      .then((data) => setDebugData(data))
+      .catch((err) => setDebugData({ error: err.message }));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +55,11 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-[#4a3129] flex items-center justify-center p-4">
+      {debugData && (
+        <pre className="absolute top-4 left-4 right-4 bg-black text-green-400 p-4 text-xs overflow-auto max-h-60 z-50">
+          {JSON.stringify(debugData, null, 2)}
+        </pre>
+      )}
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none"
         style={{ backgroundImage: 'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)', backgroundSize: '20px 20px' }}

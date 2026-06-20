@@ -7,7 +7,7 @@ import { Heart } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 
 type Props = {
-  id: number;
+  id: string | number;
   title: string;
   price: string;
   image: string;

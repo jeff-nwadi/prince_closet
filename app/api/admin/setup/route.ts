@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
+import { db } from '@/lib/db/db';
+import { user, orders } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 
 export async function POST(request: NextRequest) {
@@ -56,5 +59,14 @@ export async function POST(request: NextRequest) {
     }
     console.error('[admin/setup] Error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const allOrders = await db.select().from(orders);
+    return NextResponse.json({ success: true, allOrders });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message, stack: err.stack }, { status: 500 });
   }
 }

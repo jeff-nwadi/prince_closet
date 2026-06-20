@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -116,4 +116,48 @@ export const userSettings = pgTable("user_settings", {
   currency: text("currency").notNull().default("NGN"),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
+
+export const products = pgTable("products", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  category: text("category").notNull(),
+  price: text("price").notNull(),
+  stock: integer("stock").notNull().default(0),
+  emoji: text("emoji").notNull().default("👕"),
+  status: text("status").notNull().default("Active"), // 'Active', 'Draft'
+  sku: text("sku").notNull().unique(),
+  threshold: integer("threshold").notNull().default(10),
+  image: text("image"),
+  hoverImage: text("hoverImage"),
+  description: text("description"),
+  sizesJson: text("sizesJson"), // JSON string of sizes
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const returns = pgTable("returns", {
+  id: text("id").primaryKey(),
+  orderId: text("orderId").notNull().references(() => orders.id, { onDelete: "cascade" }),
+  productEmoji: text("productEmoji").notNull(),
+  productName: text("productName").notNull(),
+  orderNumber: text("orderNumber").notNull(),
+  customerName: text("customerName").notNull(),
+  reason: text("reason").notNull(),
+  amount: text("amount").notNull(),
+  status: text("status").notNull().default("Pending"), // 'Pending', 'Approved', 'Rejected'
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const discounts = pgTable("discounts", {
+  id: text("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  type: text("type").notNull().default("percentage"), // 'percentage', 'fixed'
+  value: text("value").notNull(),
+  status: text("status").notNull().default("Active"), // 'Active', 'Inactive'
+  usageCount: integer("usageCount").notNull().default(0),
+  maxUsage: integer("maxUsage"),
+  expiresAt: timestamp("expiresAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 

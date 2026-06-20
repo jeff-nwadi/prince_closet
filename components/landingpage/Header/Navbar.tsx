@@ -73,9 +73,13 @@ export default function Header() {
                         <motion.p variants={opacity} animate={!isActive ? "open" : "closed"} className="m-0 text-[16px] md:text-[20px]"><span className='hidden md:flex'>{t('menu')}</span> </motion.p>
                         <motion.p variants={opacity} animate={isActive ? "open" : "closed"} className="m-0 absolute opacity-0 text-[16px] md:text-[20px]">{t('close')}</motion.p>
                     </div>
-                </div>
-                
-                <Link href="/" className="no-underline text-[#4A3129] heading text-[18px] md:text-[24px] z-10 select-none">
+
+                    <Link href="/" className="no-underline text-[#4A3129] heading text-[18px] md:text-[24px] z-10 select-none flex md:hidden">
+                        <span className="inline">{t('brandName')}</span>
+                    </Link>
+                </div> 
+
+                <Link href="/" className="no-underline text-[#4A3129] heading text-[18px] md:text-[24px] z-10 select-none hidden md:flex">
                     <span className="inline">{t('brandName')}</span>
                 </Link>
 
